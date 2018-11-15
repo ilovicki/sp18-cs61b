@@ -1,8 +1,8 @@
 public class LinkedListDeque<T> {
     private class LLNode {
-        public T item;
-        public LLNode previous;
-        public LLNode next;
+        private T item;
+        private LLNode previous;
+        private LLNode next;
 
         public LLNode(T item, LLNode previous, LLNode next) {
             this.item = item;
@@ -119,17 +119,16 @@ public class LinkedListDeque<T> {
             return null;
         }
         LLNode current = sentinel.next;
-        for (int i = 0; i < size; i += 1) {
+        for (int i = 0; i < index; i ++) {
             current = current.next;
         }
         return current.item;
 
     }
-    private LLNode getLLNode(LLNode A, int index){
-        if (index == 0){
+    private LLNode getLLNode(LLNode A, int index) {
+        if (index == 0) {
             return A;
-        }
-        else{
+        } else {
             return getLLNode(A.next, index - 1);
         }
     }
