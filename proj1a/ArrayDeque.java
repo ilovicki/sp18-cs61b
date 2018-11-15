@@ -16,8 +16,10 @@ public class ArrayDeque<T> {
         if (front < back) {
             System.arraycopy(items, front, A, start, size);
         } else if (front > back) {
-            System.arraycopy(items, front, A, start, items.length - front);
-            System.arraycopy(items, 0, A, start + items.length - front, size + front - items.length);
+            int nBack = items.length - front;
+            int nFront = size + front - items.length;
+            System.arraycopy(items, front, A, start, nBack);
+            System.arraycopy(items, 0, A, start + items.length - front, nFront);
         } else {
             System.out.println("There must be some errors.");
         }
@@ -28,8 +30,8 @@ public class ArrayDeque<T> {
 
     public void addFirst(T item) {
         if (size > 0) {
-            if((double) size/items.length < 0.25 && items.length >= 16){
-                resize(items.length/2, 1);
+            if ((double) size / items.length < 0.25 && items.length >= 16) {
+                resize(items.length / 2, 1);
             }
             if (size == items.length) {
                 resize(size * 2, 1);
@@ -45,8 +47,8 @@ public class ArrayDeque<T> {
 
     public void addLast(T item) {
         if (size > 0) {
-            if ((double) size/items.length < 0.25 && items.length >= 16) {
-                resize(items.length/2, 0);
+            if ((double) size / items.length < 0.25 && items.length >= 16) {
+                resize(items.length / 2, 0);
             }
             if (size == items.length) {
                 resize(size * 2, 0);
@@ -102,8 +104,8 @@ public class ArrayDeque<T> {
                 }
             }
             size -= 1;
-            if ((double) size/items.length < 0.25 && items.length >= 16) {
-                resize(items.length/2, 0);
+            if ((double) size / items.length < 0.25 && items.length >= 16) {
+                resize(items.length / 2, 0);
             }
             return first;
         }
@@ -119,15 +121,15 @@ public class ArrayDeque<T> {
             if (size == 1) {
                 front = 0;
                 back = 0;
-            } else{
+            } else {
                 back -= 1;
                 if (back < 0) {
                     back += items.length;
                 }
             }
             size -= 1;
-            if ((double) size/items.length < 0.25 && items.length >= 16) {
-                resize(items.length/2, 0);
+            if ((double) size / items.length < 0.25 && items.length >= 16) {
+                resize(items.length / 2, 0);
             }
             return last;
         }
@@ -138,11 +140,11 @@ public class ArrayDeque<T> {
         }
         if (front <= back) {
             return items[front + index];
-        } else{
+        } else {
             if (index < items.length - front) {
                 return items[index + front];
             } else {
-                return items[index + front -items.length];
+                return items[index + front - items.length];
             }
         }
 

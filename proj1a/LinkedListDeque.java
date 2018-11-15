@@ -119,7 +119,7 @@ public class LinkedListDeque<T> {
             return null;
         }
         LLNode current = sentinel.next;
-        for (int i = 0; i < index; i ++) {
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current.item;
@@ -145,4 +145,3 @@ public class LinkedListDeque<T> {
 
     }
 }
-
