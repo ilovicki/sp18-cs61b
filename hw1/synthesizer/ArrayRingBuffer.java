@@ -1,5 +1,3 @@
-// TODO: Make sure to make this class a part of the synthesizer package
-// package <package name>;
 package synthesizer;
 
 
@@ -24,7 +22,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         //       this.capacity should be set appropriately. Note that the local variable
         //       here shadows the field we inherit from AbstractBoundedQueue, so
         //       you'll need to use this.capacity to set the capacity.
-        rb = (T[])new Object[capacity];
+        rb = (T[]) new Object[capacity];
         this.capacity = capacity;
         this.fillCount = 0;
         this.first = 0;
@@ -77,14 +75,17 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     @Override
     public T peek() {
         // TODO: Return the first item. None of your instance variables should change.
+        if (isEmpty()) {
+            throw new RuntimeException("Ring buffer underflow");
+        }
         return rb[first];
     }
 
     // TODO: When you get to part 5, implement the needed code to support iteration.
 
-    private class arbIterator implements Iterator<T> {
+    private class ARBIterator implements Iterator<T> {
         private int ptr;
-        public arbIterator() {
+        public ARBIterator() {
             ptr = 0;
         }
         public boolean hasNext() {
@@ -99,7 +100,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     }
     @Override
     public Iterator<T> iterator() {
-        return new arbIterator();
+        return new ARBIterator();
     }
 
 }
