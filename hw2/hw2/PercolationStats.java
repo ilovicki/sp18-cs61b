@@ -38,13 +38,13 @@ public class PercolationStats {
         if (T == 1) {
             return Double.NaN;
         }
-        return mean() - 1.96 * stddev() /Math.sqrt(T);
+        return mean() - 1.96 * stddev() / Math.sqrt(T);
     }
 
     public double confidenceHigh() {
         if (T == 1) {
             return Double.NaN;
         }
-        return mean() + 1.96 * stddev() /Math.sqrt(T);
+        return mean() + 1.96 * stddev() / Math.sqrt(T);
     }
 }
