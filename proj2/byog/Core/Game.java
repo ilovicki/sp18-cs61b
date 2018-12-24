@@ -131,7 +131,7 @@ public class Game {
         }
     }
 
-    private void saveWorld() {
+    public void saveWorld() {
         try {
             FileOutputStream fileOut = new FileOutputStream(".\\byog\\Core\\savedWorld.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -148,7 +148,7 @@ public class Game {
         }
     }
 
-    private void loadWorld() {
+    public void loadWorld() {
         try {
             FileInputStream fileIn = new FileInputStream(".\\byog\\Core\\savedWorld.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
