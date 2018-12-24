@@ -23,7 +23,7 @@ public class Hall {
             case 0: {
                 startX = RandomUtils.uniform(Map.random, fromRoom.blX, fromRoom.trX() + 1);
                 startY = fromRoom.trY() + 1;
-                if (startY + length < Map.HEIGHT - 1 - fromRoom.maxHeight) {
+                if (startY + length < Map.HEIGHT - 1 - fromRoom.MAXHEIGHT) {
                     success = true;
                 }
                 break;
@@ -31,7 +31,7 @@ public class Hall {
             case 1: {
                 startX = fromRoom.trX() + 1;
                 startY = RandomUtils.uniform(Map.random, fromRoom.blY, fromRoom.trY() + 1);
-                if (startX + length < Map.WIDTH - 1 - fromRoom.maxWidth) {
+                if (startX + length < Map.WIDTH - 1 - fromRoom.MAXWIDTH) {
                     success = true;
                 }
                 break;
@@ -39,7 +39,7 @@ public class Hall {
             case 2: {
                 startX = RandomUtils.uniform(Map.random, fromRoom.blX, fromRoom.trX() + 1);
                 startY = fromRoom.blY - 1;
-                if (startY - length > fromRoom.maxHeight) {
+                if (startY - length > fromRoom.MAXHEIGHT) {
                     success = true;
                 }
                 break;
@@ -47,7 +47,7 @@ public class Hall {
             case 3: {
                 startX = fromRoom.blX - 1;
                 startY = RandomUtils.uniform(Map.random, fromRoom.blY, fromRoom.trY() + 1);
-                if (startX - length > fromRoom.maxWidth) {
+                if (startX - length > fromRoom.MAXWIDTH) {
                     success = true;
                 }
                 break;

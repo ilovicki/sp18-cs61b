@@ -110,22 +110,22 @@ public class Map {
         for (int i = 1; i < WIDTH; i += 1) {
             for (int j = 1; j < HEIGHT; j += 1) {
                 if (tiles[i - 1][j - 1].equals(Tileset.WALL) && tiles[i][j].equals(Tileset.WALL)) {
-                    if (tiles[i][j - 1].equals(Tileset.FLOOR) &&
-                            tiles[i - 1][j].equals(Tileset.NOTHING)) {
+                    if (tiles[i][j - 1].equals(Tileset.FLOOR)
+                            && tiles[i - 1][j].equals(Tileset.NOTHING)) {
                         tiles[i - 1][j] = Tileset.WALL;
                     }
-                    if (tiles[i][j - 1].equals(Tileset.NOTHING) &&
-                            tiles[i - 1][j].equals(Tileset.FLOOR)) {
+                    if (tiles[i][j - 1].equals(Tileset.NOTHING)
+                            && tiles[i - 1][j].equals(Tileset.FLOOR)) {
                         tiles[i][j - 1] = Tileset.WALL;
                     }
                 }
                 if (tiles[i - 1][j].equals(Tileset.WALL) && tiles[i][j - 1].equals(Tileset.WALL)) {
-                    if (tiles[i - 1][j - 1].equals(Tileset.FLOOR) &&
-                            tiles[i][j].equals(Tileset.NOTHING)) {
+                    if (tiles[i - 1][j - 1].equals(Tileset.FLOOR)
+                            && tiles[i][j].equals(Tileset.NOTHING)) {
                         tiles[i][j] = Tileset.WALL;
                     }
-                    if (tiles[i - 1][j - 1].equals(Tileset.NOTHING) &&
-                            tiles[i][j].equals(Tileset.FLOOR)) {
+                    if (tiles[i - 1][j - 1].equals(Tileset.NOTHING)
+                            && tiles[i][j].equals(Tileset.FLOOR)) {
                         tiles[i - 1][j - 1] = Tileset.WALL;
                     }
                 }
