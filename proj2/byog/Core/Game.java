@@ -300,7 +300,8 @@ public class Game {
             loadWorld();
         }
         seriesMove(motion);
-        if (motion.charAt(motion.length() - 1) != input.charAt(input.length() - 1)) {
+        if (motion.length() > 0 && input.length() > 0
+                && motion.charAt(motion.length() - 1) != input.charAt(input.length() - 1)) {
             saveWorld();
         }
         return tiles;
