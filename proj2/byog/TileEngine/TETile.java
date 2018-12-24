@@ -1,6 +1,7 @@
 package byog.TileEngine;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -21,12 +22,13 @@ import byog.Core.RandomUtils;
  * to make your TETile class mutable, if you prefer.
  */
 
-public class TETile {
+public class TETile implements Serializable{
     private final char character; // Do not rename character or the autograder will break.
-    private final Color textColor;
-    private final Color backgroundColor;
+    private  Color textColor;
+    private  Color backgroundColor;
     private final String description;
     private final String filepath;
+    private static final long serialVersionUID = 1010L;
 
     /**
      * Full constructor for TETile objects.
@@ -113,6 +115,11 @@ public class TETile {
     public String description() {
         return description;
     }
+
+    public Color getTextColor() {
+        return textColor;
+    }
+
 
     /**
      * Creates a copy of the given tile with a slightly different text color. The new

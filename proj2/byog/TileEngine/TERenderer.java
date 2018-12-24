@@ -4,6 +4,8 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.time.LocalDateTime;
+import java.util.Locale;
 
 /**
  * Utility class for rendering tiles. You do not need to modify this file. You're welcome
@@ -83,10 +85,20 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world) {
+    public void renderFrame(TETile[][] world, String hud, int pX, int pY) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
+        Font font1 = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
+        StdDraw.setFont(font1);
+        TETile[][] temp = new TETile[3][3];
+        for (int i = 0; i < 3; i += 1) {
+            for (int j = 0; j < 3; j += 1) {
+                temp[i][j] = world[i + pX - 1][j + pY - 1];
+                world[i + pX - 1][j + pY - 1] = new TETile(world[i + pX - 1][j + pY - 1],
+                        world[i + pX - 1][j + pY - 1].getTextColor().brighter());
+            }
+        }
         for (int x = 0; x < numXTiles; x += 1) {
             for (int y = 0; y < numYTiles; y += 1) {
                 if (world[x][y] == null) {
@@ -96,6 +108,16 @@ public class TERenderer {
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
         }
+        Font font0 = new Font("Monaco", Font.BOLD, 32);
+        StdDraw.setFont(font0);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.textLeft(2, height - 1, hud);
+        StdDraw.line(0, height - 2, width, height - 2);
         StdDraw.show();
+        for (int i = 0; i < 3; i += 1) {
+            for (int j = 0; j < 3; j += 1) {
+                world[i + pX - 1][j + pY - 1] = temp[i][j];
+            }
+        }
     }
 }
