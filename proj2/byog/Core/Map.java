@@ -1,22 +1,20 @@
 package byog.Core;
-import byog.TileEngine.TERenderer;
 import byog.TileEngine.Tileset;
 import byog.TileEngine.TETile;
 
 import java.util.Random;
-import java.lang.Math;
 public class Map {
     static final int WIDTH = 80;
     static final int HEIGHT = 45;
     static Random random;
-    public TETile[][] tiles = new TETile[WIDTH][HEIGHT];
+    TETile[][] tiles = new TETile[WIDTH][HEIGHT];
     private int numRooms;
     private Room[] rooms;
     private Hall[] halls;
     private int roomCount;
     private int hallCount;
-    public int playerX;
-    public int playerY;
+    int playerX;
+    int playerY;
     public Map(long seed) {
         random = new Random(seed);
         initialize();
@@ -75,7 +73,8 @@ public class Map {
 
     private void tileRooms() {
         for (int i = 0; i < roomCount; i += 1) {
-            fillWithTiles(rooms[i].blX, rooms[i].blY, rooms[i].roomWidth, rooms[i].roomHeight, Tileset.FLOOR );
+            fillWithTiles(rooms[i].blX, rooms[i].blY, rooms[i].roomWidth,
+                    rooms[i].roomHeight, Tileset.FLOOR);
         }
     }
 
@@ -85,7 +84,7 @@ public class Map {
             int blY = Math.min(halls[i].startY, halls[i].endY());
             int trX = Math.max(halls[i].startX, halls[i].endX());
             int trY = Math.max(halls[i].startY, halls[i].endY());
-            fillWithTiles(blX, blY, trX - blX + 1, trY - blY + 1, Tileset.FLOOR );
+            fillWithTiles(blX, blY, trX - blX + 1, trY - blY + 1, Tileset.FLOOR);
         }
     }
 
@@ -111,18 +110,22 @@ public class Map {
         for (int i = 1; i < WIDTH; i += 1) {
             for (int j = 1; j < HEIGHT; j += 1) {
                 if (tiles[i - 1][j - 1].equals(Tileset.WALL) && tiles[i][j].equals(Tileset.WALL)) {
-                    if (tiles[i][j - 1].equals(Tileset.FLOOR) && tiles[i - 1][j].equals(Tileset.NOTHING)) {
+                    if (tiles[i][j - 1].equals(Tileset.FLOOR) &&
+                            tiles[i - 1][j].equals(Tileset.NOTHING)) {
                         tiles[i - 1][j] = Tileset.WALL;
                     }
-                    if (tiles[i][j - 1].equals(Tileset.NOTHING) && tiles[i - 1][j].equals(Tileset.FLOOR)) {
+                    if (tiles[i][j - 1].equals(Tileset.NOTHING) &&
+                            tiles[i - 1][j].equals(Tileset.FLOOR)) {
                         tiles[i][j - 1] = Tileset.WALL;
                     }
                 }
                 if (tiles[i - 1][j].equals(Tileset.WALL) && tiles[i][j - 1].equals(Tileset.WALL)) {
-                    if (tiles[i - 1][j - 1].equals(Tileset.FLOOR) && tiles[i][j].equals(Tileset.NOTHING)) {
+                    if (tiles[i - 1][j - 1].equals(Tileset.FLOOR) &&
+                            tiles[i][j].equals(Tileset.NOTHING)) {
                         tiles[i][j] = Tileset.WALL;
                     }
-                    if (tiles[i - 1][j - 1].equals(Tileset.NOTHING) && tiles[i][j].equals(Tileset.FLOOR)) {
+                    if (tiles[i - 1][j - 1].equals(Tileset.NOTHING) &&
+                            tiles[i][j].equals(Tileset.FLOOR)) {
                         tiles[i - 1][j - 1] = Tileset.WALL;
                     }
                 }

@@ -1,14 +1,13 @@
 package byog.Core;
-import java.lang.Math;
 public class Hall {
     private final int minLength = 2;
     private final int maxLength = 10;
-    public int startX;
-    public int startY;
-    public int length;
+    int startX;
+    int startY;
+    int length;
     // 0: north; 1: east; 2: south; 3: west
-    public int direction;
-    public boolean success;
+    int direction;
+    boolean success;
     public Hall(Room fromRoom) {
         success = false;
         length = RandomUtils.uniform(Map.random, minLength, maxLength + 1);
@@ -53,11 +52,12 @@ public class Hall {
                 }
                 break;
             }
+            default: break;
         }
     }
     public int endX() {
         int endX = startX;
-        switch(direction) {
+        switch (direction) {
             case 0: {
                 break;
             }
@@ -70,7 +70,9 @@ public class Hall {
             }
             case 3: {
                 endX -= length - 1;
+                break;
             }
+            default: break;
         }
         return endX;
     }
@@ -91,6 +93,7 @@ public class Hall {
             case 3: {
                 break;
             }
+            default: break;
         }
         return endY;
     }

@@ -1,22 +1,22 @@
 package byog.Core;
 
 public class Room {
-    static final int minWidth = 2;
-    static final int maxWidth = 6;
-    static final int minHeight = 2;
-    static final int maxHeight = 6;
+    static final int MINWIDTH = 2;
+    static final int MAXWIDTH = 6;
+    static final int MINHEIGHT = 2;
+    static final int MAXHEIGHT = 6;
 
-    public int blX;
-    public int blY;
-    public int roomWidth;
-    public int roomHeight;
-    public boolean first;
-    public boolean success;
-    public Hall fromHall;
+    int blX;
+    int blY;
+    int roomWidth;
+    int roomHeight;
+    boolean first;
+    boolean success;
+    Hall fromHall;
 
     public Room() {
-        roomWidth = RandomUtils.uniform(Map.random, minWidth, maxWidth + 1);
-        roomHeight = RandomUtils.uniform(Map.random, minHeight, maxHeight + 1);
+        roomWidth = RandomUtils.uniform(Map.random, MINWIDTH, MAXWIDTH + 1);
+        roomHeight = RandomUtils.uniform(Map.random, MINHEIGHT, MAXHEIGHT + 1);
         blX = RandomUtils.uniform(Map.random, Map.WIDTH / 2 - 5, Map.WIDTH / 2);
         blY = RandomUtils.uniform(Map.random, Map.HEIGHT / 3 - 5, Map.HEIGHT / 3);
         first = true;
@@ -26,32 +26,38 @@ public class Room {
         first = false;
         success = false;
         fromHall = hall;
-        roomWidth = RandomUtils.uniform(Map.random, minWidth, maxWidth + 1);
-        roomHeight = RandomUtils.uniform(Map.random, minHeight, maxHeight + 1);
+        roomWidth = RandomUtils.uniform(Map.random, MINWIDTH, MAXWIDTH + 1);
+        roomHeight = RandomUtils.uniform(Map.random, MINHEIGHT, MAXHEIGHT + 1);
         int dir = fromHall.direction;
-        switch(dir) {
+        switch (dir) {
             case 0: {
-                blX = RandomUtils.uniform(Map.random, fromHall.endX() - roomWidth + 1, fromHall.endX() + 1);
+                blX = RandomUtils.uniform(Map.random, fromHall.endX() - roomWidth + 1,
+                        fromHall.endX() + 1);
                 blY = fromHall.endY() + 1;
                 break;
             }
             case 1: {
                 blX = fromHall.endX() + 1;
-                blY = RandomUtils.uniform(Map.random, fromHall.endY() - roomHeight + 1, fromHall.endY() + 1);
+                blY = RandomUtils.uniform(Map.random, fromHall.endY() - roomHeight + 1,
+                        fromHall.endY() + 1);
                 break;
             }
             case 2: {
-                blX = RandomUtils.uniform(Map.random, fromHall.endX() - roomWidth + 1, fromHall.endX() + 1);
+                blX = RandomUtils.uniform(Map.random, fromHall.endX() - roomWidth + 1,
+                        fromHall.endX() + 1);
                 blY = fromHall.endY() - roomHeight;
                 break;
             }
             case 3: {
                 blX = fromHall.endX() - roomWidth;
-                blY = RandomUtils.uniform(Map.random, fromHall.endY() - roomHeight + 1, fromHall.endY() + 1);
+                blY = RandomUtils.uniform(Map.random, fromHall.endY() - roomHeight + 1,
+                        fromHall.endY() + 1);
                 break;
             }
+            default: break;
         }
-        if (blX > 0 && blX + roomWidth < Map.WIDTH  - 1 && blY > 0 && blY + roomHeight < Map.HEIGHT - 1){
+        if (blX > 0 && blX + roomWidth < Map.WIDTH  - 1 && blY > 0
+                && blY + roomHeight < Map.HEIGHT - 1) {
             success = true;
         }
 
@@ -70,7 +76,7 @@ public class Room {
     }
     public boolean interfere(Room room) {
         // need room for walls.
-        return this.blX <= room.trX() + 2 && this.trX() >= room.blX - 2 &&
-                this.blY <= room.trY() + 2 && this.trY() >= room.blY - 2;
+        return this.blX <= room.trX() + 2 && this.trX() >= room.blX - 2
+                && this.blY <= room.trY() + 2 && this.trY() >= room.blY - 2;
     }
 }

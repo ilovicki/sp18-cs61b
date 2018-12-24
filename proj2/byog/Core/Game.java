@@ -4,10 +4,14 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
-import edu.princeton.cs.introcs.StdAudio;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -187,7 +191,7 @@ public class Game {
         }
     }
 
-    private String getMotions (String input, int start) {
+    private String getMotions(String input, int start) {
         String motion = "";
         for (int j = start; j < input.length(); j += 1) {
             char c = input.charAt(j);
@@ -266,44 +270,39 @@ public class Game {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
+    public TETile[][] playWithInputString(String input) {
+        // and return a 2D tile representation of the world that would have been
+        // drawn if the same inputs had been given to playWithKeyboard().
 
-
-
-
-        public TETile[][] playWithInputString (String input){
-            // TODO: Fill out this method to run the game using the input passed in,
-            // and return a 2D tile representation of the world that would have been
-            // drawn if the same inputs had been given to playWithKeyboard().
-
-            String newRegex = "(?i)n[\\d]+s[wsad]*(:q)?";
-            String loadRegex = "(?i)l[wsad]*(:q)?";
-            String motion;
-            if (!(input.matches(newRegex) || input.matches(loadRegex))) {
-                throw new IllegalArgumentException("The input string is illegal.");
-            }
-            if (input.matches(newRegex)) {
-                String seedStr = "";
-                int seedEndId = 1;
-                for (int i = 1; i < input.length(); i += 1) {
-                    char cur = input.charAt(i);
-                    if (cur - '0' < 0 || cur - '0' > 9) {
-                        break;
-                    }
-                    seedEndId = i;
-                    seedStr += cur;
-
-                }
-                long seed = Long.parseLong(seedStr);
-                initializeGame(seed);
-                motion = getMotions(input, seedEndId + 2);
-            } else {
-                motion = getMotions(input, 1);
-                loadWorld();
-            }
-            seriesMove(motion);
-            if (motion.charAt(motion.length() - 1) != input.charAt(input.length() - 1)) {
-                saveWorld();
-            }
-            return tiles;
+        String newRegex = "(?i)n[\\d]+s[wsad]*(:q)?";
+        String loadRegex = "(?i)l[wsad]*(:q)?";
+        String motion;
+        if (!(input.matches(newRegex) || input.matches(loadRegex))) {
+            throw new IllegalArgumentException("The input string is illegal.");
         }
+        if (input.matches(newRegex)) {
+            String seedStr = "";
+            int seedEndId = 1;
+            for (int i = 1; i < input.length(); i += 1) {
+                char cur = input.charAt(i);
+                if (cur - '0' < 0 || cur - '0' > 9) {
+                    break;
+                }
+                seedEndId = i;
+                seedStr += cur;
+
+            }
+            long seed = Long.parseLong(seedStr);
+            initializeGame(seed);
+            motion = getMotions(input, seedEndId + 2);
+        } else {
+            motion = getMotions(input, 1);
+            loadWorld();
+        }
+        seriesMove(motion);
+        if (motion.charAt(motion.length() - 1) != input.charAt(input.length() - 1)) {
+            saveWorld();
+        }
+        return tiles;
+    }
 }

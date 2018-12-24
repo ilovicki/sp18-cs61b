@@ -4,8 +4,6 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.time.LocalDateTime;
-import java.util.Locale;
 
 /**
  * Utility class for rendering tiles. You do not need to modify this file. You're welcome

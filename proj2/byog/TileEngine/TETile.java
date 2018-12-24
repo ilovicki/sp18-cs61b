@@ -22,7 +22,7 @@ import byog.Core.RandomUtils;
  * to make your TETile class mutable, if you prefer.
  */
 
-public class TETile implements Serializable{
+public class TETile implements Serializable {
     private final char character; // Do not rename character or the autograder will break.
     private  Color textColor;
     private  Color backgroundColor;
