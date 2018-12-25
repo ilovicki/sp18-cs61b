@@ -131,9 +131,10 @@ public class Game {
         }
     }
 
-    public void saveWorld() {
+    private void saveWorld() {
         try {
-            FileOutputStream fileOut = new FileOutputStream(".\\byog\\Core\\savedWorld.ser");
+            FileOutputStream fileOut = new FileOutputStream("D:\\cs61b\\sp18-cs61b\\proj2" +
+                    "\\byog\\Core\\savedWorld.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(tiles);
             out.writeInt(pX);
@@ -148,9 +149,10 @@ public class Game {
         }
     }
 
-    public void loadWorld() {
+    private void loadWorld() {
         try {
-            FileInputStream fileIn = new FileInputStream(".\\byog\\Core\\savedWorld.ser");
+            FileInputStream fileIn = new FileInputStream("D:\\cs61b\\sp18-cs61b\\proj2" +
+                    "\\byog\\Core\\savedWorld.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             tiles = (TETile[][]) in.readObject();
             pX = in.readInt();
