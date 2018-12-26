@@ -30,10 +30,23 @@ public class TestBSTMap {
             b.put("hi" + i, 1 + i);
             //make sure put is working via containsKey and get
             assertTrue(null != b.get("hi" + i));
+            assertTrue(b.keySet().contains("hi" + i));
             assertTrue(b.get("hi" + i).equals(1 + i));
             assertTrue(b.containsKey("hi" + i));
         }
         assertEquals(455, b.size());
+        assertEquals(455, (int) b.remove("hi454"));
+        assertEquals(454, b.size());
+        assertTrue(b.keySet().contains("hi18"));
+        assertEquals(19, (int) b.remove("hi18"));
+        assertFalse(b.keySet().contains("hi18"));
+        assertEquals(453, b.size());
+        assertEquals(null, b.remove("hi81", 10));
+        assertTrue(b.keySet().contains("hi81"));
+        assertEquals(453, b.size());
+        assertEquals(34, (int) b.remove("hi33", 34));
+        assertFalse(b.keySet().contains("hi33"));
+        assertEquals(452, b.size());
         b.clear();
         assertEquals(0, b.size());
         for (int i = 0; i < 455; i++) {
