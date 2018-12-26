@@ -63,7 +63,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     private V getHelper(K key, Node p) {
 //        throw new UnsupportedOperationException();
-        if (p == null) {
+        if (key == null || p == null) {
             return null;
         }
         if (key.compareTo(p.key) == 0) {
@@ -117,6 +117,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     @Override
     public void put(K key, V value) {
 //        throw new UnsupportedOperationException();
+        if (key == null || value == null) {
+            return;
+        }
         if (root == null) {
             root = new Node(key, value, null, null);
             size += 1;
