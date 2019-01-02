@@ -208,6 +208,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (index == 0) {
             throw new IllegalArgumentException("There is no node with this item.");
         }
+        contents[index].myPriority = priority;
         swim(index);
         sink(index);
     }
