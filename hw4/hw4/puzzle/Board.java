@@ -1,35 +1,32 @@
 package hw4.puzzle;
 import edu.princeton.cs.algs4.Queue;
-public class Board implements WorldState{
-    private int N;
+public class Board implements WorldState {
+    private int n;
     private int[][] tiles;
     public Board(int[][] t) {
-        N = t.length;
-        tiles = new int[N][N];
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
+        n = t.length;
+        tiles = new int[n][n];
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
                 tiles[i][j] = t[i][j];
             }
         }
 
     }
     public int tileAt(int i, int j) {
-        if (i < 0 || i > N - 1 || j < 0 || j > N - 1) {
+        if (i < 0 || i > n - 1 || j < 0 || j > n - 1) {
             throw new IndexOutOfBoundsException();
         }
         return tiles[i][j];
     }
     public int size() {
-        return N;
-    }
-    public int[][] getTiles() {
-        return tiles;
+        return n;
     }
 
     private int[][] neighbor(int r0, int c0, int r1, int c1) {
-        int[][] nbTiles = new int[N][N];
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
+        int[][] nbTiles = new int[n][n];
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
                 nbTiles[i][j] = tileAt(i, j);
             }
         }
@@ -43,9 +40,9 @@ public class Board implements WorldState{
         Queue<WorldState> neighbors = new Queue<>();
         int blankRow = -1;
         int blankCol = -1;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
-                if(tileAt(i, j) == 0) {
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
+                if (tileAt(i, j) == 0) {
                     blankRow = i;
                     blankCol = j;
                     break;
@@ -56,7 +53,7 @@ public class Board implements WorldState{
             Board bd = new Board(neighbor(blankRow, blankCol, blankRow - 1, blankCol));
             neighbors.enqueue(bd);
         }
-        if (blankRow + 1 < N) {
+        if (blankRow + 1 < n) {
             Board bd = new Board(neighbor(blankRow, blankCol, blankRow + 1, blankCol));
             neighbors.enqueue(bd);
         }
@@ -64,7 +61,7 @@ public class Board implements WorldState{
             Board bd = new Board(neighbor(blankRow, blankCol, blankRow, blankCol - 1));
             neighbors.enqueue(bd);
         }
-        if (blankCol + 1 < N) {
+        if (blankCol + 1 < n) {
             Board bd = new Board(neighbor(blankRow, blankCol, blankRow, blankCol + 1));
             neighbors.enqueue(bd);
         }
@@ -73,9 +70,10 @@ public class Board implements WorldState{
     }
     public int hamming() {
         int sum = 0;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
-                if (tileAt(i, j) != ((i * N + j + 1) % (N * N))) {
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
+                int num = tileAt(i, j);
+                if (num != 0 && num != ((i * n + j + 1) % (n * n))) {
                     sum += 1;
                 }
             }
@@ -84,24 +82,18 @@ public class Board implements WorldState{
     }
     public int manhattan() {
         int sum = 0;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
                 int num = tileAt(i, j);
-                int numAtRow;
-                int numAtCol;
-                if (num == 0) {
-                    numAtRow = N - 1;
-                    numAtCol = N - 1;
-                } else {
-                    numAtRow = (num - 1) / N;
-                    numAtCol = num - 1 - numAtRow * N;
+                if (num != 0) {
+                    int numAtRow = (num - 1) / n;
+                    int numAtCol = num - 1 - numAtRow * n;
+                    int manh = Math.abs(i - numAtRow) + Math.abs(j - numAtCol);
+                    sum += manh;
                 }
-                int manh = Math.abs(i - numAtRow) + Math.abs(j - numAtCol);
-                sum += manh;
             }
         }
         return sum;
-
     }
     public int estimatedDistanceToGoal() {
         return hamming();
@@ -114,9 +106,28 @@ public class Board implements WorldState{
             return false;
         }
         Board board = (Board) y;
-        return getTiles().equals(board.getTiles());
+        if (size() != board.size()) {
+            return false;
+        }
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
+                if (tileAt(i, j) != board.tileAt(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-
+    public int hashCode() {
+        int s = 0;
+        for (int i = 0; i < n; i += 1) {
+            for (int j = 0; j < n; j += 1) {
+                s *= 10;
+                s += tileAt(i, j);
+            }
+        }
+        return s;
     }
 
     /** Returns the string representation of the board. 
@@ -127,7 +138,7 @@ public class Board implements WorldState{
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }

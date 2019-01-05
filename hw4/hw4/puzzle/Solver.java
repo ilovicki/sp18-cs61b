@@ -3,8 +3,6 @@ package hw4.puzzle;
 import  edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Queue;
 
-import java.util.HashSet;
-
 public class Solver {
     private class SearchNode implements Comparable<SearchNode> {
         private WorldState current;
@@ -52,7 +50,7 @@ public class Solver {
                 goalNode = X;
                 return;
             }
-            for (WorldState nb: X.curState().neighbors()) {
+            for (WorldState nb : X.curState().neighbors()) {
                 if (X.preNode() != null && nb.equals(X.preNode().curState())) {
                     continue;
                 }
@@ -60,8 +58,8 @@ public class Solver {
                 pq.insert(sn);
                 numEnqueued += 1;
 
-                }
             }
+        }
     }
     private boolean visited(Queue<WorldState> q, WorldState ws) {
         for (WorldState s: q) {
@@ -71,7 +69,7 @@ public class Solver {
         }
         return false;
     }
-    public int getNumEnqueued() {
+    int getNumEnqueued() {
         return numEnqueued;
     }
     public int moves() {
