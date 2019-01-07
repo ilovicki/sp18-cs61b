@@ -1,7 +1,8 @@
 package hw4.puzzle;
 
 import  edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
+
+import java.util.ArrayDeque;
 
 public class Solver {
     private class SearchNode implements Comparable<SearchNode> {
@@ -35,42 +36,29 @@ public class Solver {
         }
     }
     private SearchNode goalNode;
-    private int numEnqueued;
-    private Queue<WorldState> solution = new Queue<>();
+    private ArrayDeque<WorldState> solution = new ArrayDeque<>();
     public Solver(WorldState initial) {
-        numEnqueued = 0;
         MinPQ<SearchNode> pq = new MinPQ<>();
         SearchNode start = new SearchNode(initial, 0, null);
         pq.insert(start);
-        numEnqueued += 1;
         while (!pq.isEmpty()) {
             SearchNode X = pq.delMin();
-            solution.enqueue(X.curState());
             if (X.curState().isGoal()) {
                 goalNode = X;
-                return;
+                break;
             }
             for (WorldState nb : X.curState().neighbors()) {
-                if (X.preNode() != null && nb.equals(X.preNode().curState())) {
-                    continue;
+                if (X.preNode() == null || !nb.equals(X.preNode().curState())) {
+                    SearchNode sn = new SearchNode(nb, X.moves() + 1, X);
+                    pq.insert(sn);
                 }
-                SearchNode sn = new SearchNode(nb, X.moves() + 1, X);
-                pq.insert(sn);
-                numEnqueued += 1;
-
             }
         }
-    }
-    private boolean visited(Queue<WorldState> q, WorldState ws) {
-        for (WorldState s: q) {
-            if (s.equals(ws)) {
-                return true;
-            }
+        SearchNode cur = goalNode;
+        while (cur != null) {
+            solution.addFirst(cur.curState());
+            cur = cur.preNode();
         }
-        return false;
-    }
-    int getNumEnqueued() {
-        return numEnqueued;
     }
     public int moves() {
         return goalNode.moves();
