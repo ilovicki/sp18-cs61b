@@ -87,6 +87,9 @@ public class MergeSort {
 //        return mergeSortedQueues(mergeSort(left), mergeSort(right));
         Queue<Queue<Item>> origin = makeSingleItemQueues(items);
         int n = origin.size();
+        if (n == 0) {
+            return null;
+        }
         while (n > 1) {
             Queue<Queue<Item>> temp = new Queue<>();
             for (int i = 0; i < n / 2; i += 1) {
