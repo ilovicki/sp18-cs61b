@@ -22,6 +22,7 @@ public class MazeDepthFirstPaths extends MazeExplorer {
         t = maze.xyTo1D(targetX, targetY);
         distTo[s] = 0;
         edgeTo[s] = s;
+
     }
 
     private void dfs(int v) {
