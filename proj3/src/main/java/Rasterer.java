@@ -104,10 +104,10 @@ public class Rasterer {
         double rasterUllat = MapServer.ROOT_ULLAT - latPpic * upper;
         double rasterLrlat = MapServer.ROOT_ULLAT - latPpic * (lower + 1);
 
-        String[][] render_grid = new String[lower - upper + 1][right - left + 1];
+        String[][] renderGrid = new String[lower - upper + 1][right - left + 1];
         for (int i = 0; i <= lower - upper; i += 1) {
             for (int j = 0; j <= right - left; j += 1) {
-                render_grid[i][j] = "d" + depth + "_x" + (j + left) + "_y" + (i + upper) + ".png";
+                renderGrid[i][j] = "d" + depth + "_x" + (j + left) + "_y" + (i + upper) + ".png";
             }
         }
         results.put("query_success", querySuccess);
@@ -116,7 +116,7 @@ public class Rasterer {
         results.put("raster_lr_lon", rasterLrlon);
         results.put("raster_ul_lat", rasterUllat);
         results.put("raster_lr_lat", rasterLrlat);
-        results.put("render_grid", render_grid);
+        results.put("render_grid", renderGrid);
 
         return results;
     }
