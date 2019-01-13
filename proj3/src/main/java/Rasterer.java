@@ -44,8 +44,80 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+//        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
+//                           + "your browser.");
+        double ullat = params.get("ullat");
+        double ullon = params.get("ullon");
+        double lrlat = params.get("lrlat");
+        double lrlon = params.get("lrlon");
+        double w = params.get("w");
+        double h = params.get("h");
+        boolean query_success = true;
+        if (ullat < lrlat || ullon > lrlon || ullat <= MapServer.ROOT_LRLAT
+                || lrlat >= MapServer.ROOT_ULLAT || ullon >= MapServer.ROOT_LRLON
+                || lrlon <= MapServer.ROOT_ULLON) {
+            query_success = false;
+            results.put("query_success", query_success);
+            return results;
+        }
+
+        int depth = 7;
+        for (int i = 0; i < 8; i += 1) {
+            double res_LondDPP = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON)
+                    / (MapServer.TILE_SIZE * Math.pow(2, i));
+            if (res_LondDPP <= (lrlon - ullon) / w) {
+                depth = i;
+                break;
+            }
+        }
+
+        double lonPPic = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2, depth);
+        int left = 0;
+        int right = (int) Math.pow(2, depth) - 1;
+        for (int i = 0; i < Math.pow(2, depth); i += 1) {
+            if (ullon >= MapServer.ROOT_ULLON + lonPPic * i
+                    && ullon < MapServer.ROOT_ULLON + lonPPic * (i + 1)) {
+                left = i;
+            }
+            if (lrlon > MapServer.ROOT_ULLON + lonPPic * i
+                    && lrlon <= MapServer.ROOT_ULLON + lonPPic * (i + 1)) {
+                right = i;
+                break;
+            }
+        }
+        double raster_ul_lon = MapServer.ROOT_ULLON + lonPPic * left;
+        double raster_lr_lon = MapServer.ROOT_ULLON + lonPPic * (right + 1);
+        double latPPic = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / Math.pow(2, depth);
+        int upper = 0;
+        int lower = (int) Math.pow(2, depth) - 1;
+        for (int j = 0; j < Math.pow(2, depth); j += 1) {
+            if (ullat <= MapServer.ROOT_ULLAT - latPPic * j
+                    && ullat > MapServer.ROOT_ULLAT - latPPic * (j + 1)) {
+                upper = j;
+            }
+            if (lrlat < MapServer.ROOT_ULLAT - latPPic * j
+                    && lrlat >= MapServer.ROOT_ULLAT - latPPic * (j + 1)) {
+                lower = j;
+                break;
+            }
+        }
+        double raster_ul_lat = MapServer.ROOT_ULLAT - latPPic * upper;
+        double raster_lr_lat = MapServer.ROOT_ULLAT - latPPic * (lower + 1);
+
+        String[][] render_grid = new String[lower - upper + 1][right - left + 1];
+        for (int i = 0; i <= lower - upper; i += 1) {
+            for (int j = 0; j <= right - left; j += 1) {
+                render_grid[i][j] = "d" + depth + "_x" + (j + left) + "_y" + (i + upper) + ".png";
+            }
+        }
+        results.put("query_success", query_success);
+        results.put("depth", depth);
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("render_grid", render_grid);
+
         return results;
     }
 
