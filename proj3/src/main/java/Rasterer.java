@@ -52,57 +52,57 @@ public class Rasterer {
         double lrlon = params.get("lrlon");
         double w = params.get("w");
         double h = params.get("h");
-        boolean query_success = true;
+        boolean querySuccess = true;
         if (ullat < lrlat || ullon > lrlon || ullat <= MapServer.ROOT_LRLAT
                 || lrlat >= MapServer.ROOT_ULLAT || ullon >= MapServer.ROOT_LRLON
                 || lrlon <= MapServer.ROOT_ULLON) {
-            query_success = false;
-            results.put("query_success", query_success);
+            querySuccess = false;
+            results.put("query_success", querySuccess);
             return results;
         }
 
         int depth = 7;
         for (int i = 0; i < 8; i += 1) {
-            double res_LondDPP = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON)
+            double resLondpp = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON)
                     / (MapServer.TILE_SIZE * Math.pow(2, i));
-            if (res_LondDPP <= (lrlon - ullon) / w) {
+            if (resLondpp <= (lrlon - ullon) / w) {
                 depth = i;
                 break;
             }
         }
 
-        double lonPPic = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2, depth);
+        double lonPpic = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2, depth);
         int left = 0;
         int right = (int) Math.pow(2, depth) - 1;
         for (int i = 0; i < Math.pow(2, depth); i += 1) {
-            if (ullon >= MapServer.ROOT_ULLON + lonPPic * i
-                    && ullon < MapServer.ROOT_ULLON + lonPPic * (i + 1)) {
+            if (ullon >= MapServer.ROOT_ULLON + lonPpic * i
+                    && ullon < MapServer.ROOT_ULLON + lonPpic * (i + 1)) {
                 left = i;
             }
-            if (lrlon > MapServer.ROOT_ULLON + lonPPic * i
-                    && lrlon <= MapServer.ROOT_ULLON + lonPPic * (i + 1)) {
+            if (lrlon > MapServer.ROOT_ULLON + lonPpic * i
+                    && lrlon <= MapServer.ROOT_ULLON + lonPpic * (i + 1)) {
                 right = i;
                 break;
             }
         }
-        double raster_ul_lon = MapServer.ROOT_ULLON + lonPPic * left;
-        double raster_lr_lon = MapServer.ROOT_ULLON + lonPPic * (right + 1);
-        double latPPic = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / Math.pow(2, depth);
+        double rasterUllon = MapServer.ROOT_ULLON + lonPpic * left;
+        double rasterLrlon = MapServer.ROOT_ULLON + lonPpic * (right + 1);
+        double latPpic = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / Math.pow(2, depth);
         int upper = 0;
         int lower = (int) Math.pow(2, depth) - 1;
         for (int j = 0; j < Math.pow(2, depth); j += 1) {
-            if (ullat <= MapServer.ROOT_ULLAT - latPPic * j
-                    && ullat > MapServer.ROOT_ULLAT - latPPic * (j + 1)) {
+            if (ullat <= MapServer.ROOT_ULLAT - latPpic * j
+                    && ullat > MapServer.ROOT_ULLAT - latPpic * (j + 1)) {
                 upper = j;
             }
-            if (lrlat < MapServer.ROOT_ULLAT - latPPic * j
-                    && lrlat >= MapServer.ROOT_ULLAT - latPPic * (j + 1)) {
+            if (lrlat < MapServer.ROOT_ULLAT - latPpic * j
+                    && lrlat >= MapServer.ROOT_ULLAT - latPpic * (j + 1)) {
                 lower = j;
                 break;
             }
         }
-        double raster_ul_lat = MapServer.ROOT_ULLAT - latPPic * upper;
-        double raster_lr_lat = MapServer.ROOT_ULLAT - latPPic * (lower + 1);
+        double rasterUllat = MapServer.ROOT_ULLAT - latPpic * upper;
+        double rasterLrlat = MapServer.ROOT_ULLAT - latPpic * (lower + 1);
 
         String[][] render_grid = new String[lower - upper + 1][right - left + 1];
         for (int i = 0; i <= lower - upper; i += 1) {
@@ -110,12 +110,12 @@ public class Rasterer {
                 render_grid[i][j] = "d" + depth + "_x" + (j + left) + "_y" + (i + upper) + ".png";
             }
         }
-        results.put("query_success", query_success);
+        results.put("query_success", querySuccess);
         results.put("depth", depth);
-        results.put("raster_ul_lon", raster_ul_lon);
-        results.put("raster_lr_lon", raster_lr_lon);
-        results.put("raster_ul_lat", raster_ul_lat);
-        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("raster_ul_lon", rasterUllon);
+        results.put("raster_lr_lon", rasterLrlon);
+        results.put("raster_ul_lat", rasterUllat);
+        results.put("raster_lr_lat", rasterLrlat);
         results.put("render_grid", render_grid);
 
         return results;
