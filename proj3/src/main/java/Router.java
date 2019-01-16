@@ -1,7 +1,7 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.PriorityQueue;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -23,9 +23,59 @@ public class Router {
      * @param destlat The latitude of the destination location.
      * @return A list of node id's in the order visited on the shortest path.
      */
+
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        List<Long> results = new ArrayList<>();
+        Long s = g.closest(stlon, stlat);
+        Long t = g.closest(destlon, destlat);
+        Map<Long, Double> bestDists = new HashMap<>();
+        Map<Long, Long> parents = new HashMap<>();
+        bestDists.put(s, 0.0);
+        class CmpNode implements Comparator<Long> {
+            @Override
+            public int compare(Long a, Long b) {
+                double cmp = bestDists.get(a) + g.distance(a, t)
+                        - (bestDists.get(b) + g.distance(b, t));
+                if (cmp < 0) {
+                    return -1;
+                } else if (cmp > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+        CmpNode cmp = new CmpNode();
+        PriorityQueue<Long> pq = new PriorityQueue<>(cmp);
+        pq.add(s);
+        while (!pq.isEmpty()) {
+            Long v = pq.poll();
+            if (v.equals(t)) {
+                break;
+            }
+            for (Long w: g.adjacent(v)) {
+                Double tempDist = bestDists.get(v) + g.distance(v, w);
+                if (!bestDists.containsKey(w)) {
+                    bestDists.put(w, tempDist);
+                    parents.put(w, v);
+                    pq.add(w);
+                } else if (pq.contains(w) && tempDist < bestDists.get(w)) {
+                    bestDists.put(w, tempDist);
+                    parents.put(w, v);
+                }
+            }
+        }
+        Stack<Long> path = new Stack<>();
+        Long cur = t;
+        while (cur != null) {
+            path.push(cur);
+            cur = parents.get(cur);
+        }
+        while (!path.isEmpty()) {
+            results.add(path.pop());
+        }
+        return results;
     }
 
     /**
@@ -37,7 +87,66 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> results = new ArrayList<>();
+        List<Double> bearings = new ArrayList<>();
+        List<Double> distances = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        List<Double> relativeBearings = new ArrayList<>();
+        for (int i = 0; i < route.size() - 1; i += 1) {
+            Long a = route.get(i);
+            Long b = route.get(i + 1);
+            bearings.add(g.bearing(a, b));
+            distances.add(g.distance(a, b));
+            names.add(g.getName(a, b));
+        }
+        relativeBearings.add(0.0);
+        for (int j = 1; j < bearings.size(); j += 1) {
+            relativeBearings.add(bearings.get(j) - bearings.get(j - 1));
+        }
+        String lastName = names.get(0);
+        double lastDistance = distances.get(0);
+        NavigationDirection nd = new NavigationDirection();
+        nd.direction = getDirection(relativeBearings.get(0));
+        nd.way = lastName;
+        for (int k = 1; k < distances.size(); k += 1) {
+            if (!names.get(k).equals(lastName)) {
+                nd.distance = lastDistance;
+                results.add(nd);
+                lastName = names.get(k);
+                lastDistance = distances.get(k);
+                nd = new NavigationDirection();
+                nd.direction = getDirection(relativeBearings.get(k));
+                nd.way = lastName;
+            } else {
+                lastDistance += distances.get(k);
+            }
+        }
+        nd.distance = lastDistance;
+        results.add(nd);
+        return results;
+    }
+    private static int getDirection(double relBear) {
+        if (relBear == 0.0) {
+            return 0;
+        } else if (relBear >= - 15 && relBear <= 15) {
+            return 1;
+        } else if (relBear >= - 30 && relBear < - 15) {
+            return 2;
+        } else if (relBear > 15 && relBear <= 30) {
+            return 3;
+        } else if (relBear >= - 100 && relBear < - 30) {
+            return 5;
+        } else if (relBear > 30 && relBear <= 100) {
+            return 4;
+        } else if (relBear >= - 180 && relBear < - 100) {
+            return 6;
+        } else if (relBear > 100 && relBear <= 180) {
+            return 7;
+        } else if (relBear < - 180) {
+            return getDirection(relBear + 360);
+        } else {
+            return getDirection(relBear - 360);
+        }
     }
 
 
