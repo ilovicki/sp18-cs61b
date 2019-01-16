@@ -37,21 +37,8 @@ public class Router {
         Map<Long, Double> bestDists = new HashMap<>();
         Map<Long, Long> parents = new HashMap<>();
         bestDists.put(s, 0.0);
-        class CmpNode implements Comparator<Long> {
-            @Override
-            public int compare(Long a, Long b) {
-                double cmp = bestDists.get(a) + g.distance(a, t)
-                        - (bestDists.get(b) + g.distance(b, t));
-                if (cmp < 0) {
-                    return -1;
-                } else if (cmp > 0) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        }
-        CmpNode cmp = new CmpNode();
+
+        CmpNode cmp = new CmpNode(g, bestDists, t);
         PriorityQueue<Long> pq = new PriorityQueue<>(cmp);
         pq.add(s);
         while (!pq.isEmpty()) {
@@ -81,6 +68,30 @@ public class Router {
             results.add(path.pop());
         }
         return results;
+    }
+
+    static class CmpNode implements Comparator<Long> {
+        GraphDB g;
+        Map<Long, Double> bestDists;
+        Long t;
+        CmpNode(GraphDB g, Map<Long, Double> bestDists, Long t) {
+            this.g = g;
+            this.bestDists = bestDists;
+            this.t = t;
+
+        }
+        @Override
+        public int compare(Long a, Long b) {
+            double cmp = bestDists.get(a) + g.distance(a, t)
+                    - (bestDists.get(b) + g.distance(b, t));
+            if (cmp < 0) {
+                return -1;
+            } else if (cmp > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     /**
