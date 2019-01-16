@@ -1,8 +1,13 @@
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.PriorityQueue;
-
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.util.Stack;
+import java.util.Objects;
 /**
  * This class provides a shortestPath method for finding routes between two points
  * on the map. Start by using Dijkstra's, and if your code isn't fast enough for your
@@ -128,21 +133,21 @@ public class Router {
     private static int getDirection(double relBear) {
         if (relBear == 0.0) {
             return 0;
-        } else if (relBear >= - 15 && relBear <= 15) {
+        } else if (relBear >= -15 && relBear <= 15) {
             return 1;
-        } else if (relBear >= - 30 && relBear < - 15) {
+        } else if (relBear >= -30 && relBear < -15) {
             return 2;
         } else if (relBear > 15 && relBear <= 30) {
             return 3;
-        } else if (relBear >= - 100 && relBear < - 30) {
+        } else if (relBear >= -100 && relBear < -30) {
             return 5;
         } else if (relBear > 30 && relBear <= 100) {
             return 4;
-        } else if (relBear >= - 180 && relBear < - 100) {
+        } else if (relBear >= -180 && relBear < -100) {
             return 6;
         } else if (relBear > 100 && relBear <= 180) {
             return 7;
-        } else if (relBear < - 180) {
+        } else if (relBear < -180) {
             return getDirection(relBear + 360);
         } else {
             return getDirection(relBear - 360);
