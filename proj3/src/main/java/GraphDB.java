@@ -300,7 +300,7 @@ public class GraphDB {
             for (int i = 0; i < prefix.length(); i += 1) {
                 char c = prefix.charAt(i);
                 if (cur == null) {
-                    throw new IllegalArgumentException("Find no matches for this prefix.");
+                    return null;
                 }
                 cur = cur.links.get(c);
             }
