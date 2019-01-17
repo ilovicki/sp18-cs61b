@@ -210,7 +210,7 @@ public class GraphDB {
 
     void addNode(Node n) {
         vertices.put(n.id, n);
-        String name = getNodeName(n.id);
+        String name = n.extraInfo.get("name");
         if (name != null) {
             nodesTrie.add(n.id, cleanString(name));
         }
@@ -244,12 +244,10 @@ public class GraphDB {
         }
         return "";
     }
-    Trie getNodesTrie() {
-        return nodesTrie;
-    }
+
     List<String> getLocationsByPrefix(String prefix) {
         List<String> names = new ArrayList<>();
-        List<Long> ids = getNodesTrie().idsWithPrefix(cleanString(prefix));
+        List<Long> ids = nodesTrie.idsWithPrefix(cleanString(prefix));
         for (long id: ids) {
             names.add(getNodeName(id));
         }
@@ -257,9 +255,9 @@ public class GraphDB {
     }
     List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList();
-        List<Long> ids = getNodesTrie().idsWithPrefix(cleanString(locationName));
+        List<Long> ids = nodesTrie.idsWithPrefix(cleanString(locationName));
         for (Long id: ids) {
-            Map<String, GraphDB.Node> item = new HashMap<>();
+            Map<String, Node> item = new HashMap<>();
             item.put(getNodeName(id), getNode(id));
             results.add(item);
         }
