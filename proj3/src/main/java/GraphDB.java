@@ -247,45 +247,45 @@ public class GraphDB {
 
     List<String> getLocationsByPrefix(String prefix) {
         List<String> names = new ArrayList<>();
-        List<Long> ids = nodesTrie.idsWithPrefix(cleanString(prefix));
-        for (long id: ids) {
-            names.add(getNodeName(id));
+        List<Long> indices = nodesTrie.idsWithPrefix(cleanString(prefix));
+        for (long index: indices) {
+            names.add(getNodeName(index));
         }
         return names;
     }
     List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList();
-        List<Long> ids = nodesTrie.idsWithPrefix(cleanString(locationName));
-        for (Long id: ids) {
+        List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
+        for (long index: indices) {
             Map<String, Node> item = new HashMap<>();
-            item.put(getNodeName(id), getNode(id));
+            item.put(getNodeName(index), getNode(index));
             results.add(item);
         }
         return results;
     }
 
     static class Trie {
-        Long id;
+        long index;
         Map<Character, Trie> links;
 
         Trie() {
             links = new TreeMap<>();
-            id = null;
+            index = -1;
         }
 
-        void add(Long id, String key) {
-            add(this, id, key, 0);
+        void add(long index, String key) {
+            add(this, index, key, 0);
         }
-        private Trie add(Trie x, Long id, String key, int d) {
+        private Trie add(Trie x, long index, String key, int d) {
             if (x == null) {
                 x = new Trie();
             }
             if (d == key.length()) {
-                x.id = id;
+                x.index = index;
                 return x;
             }
             char c = key.charAt(d);
-            x.links.put(c, add(x.links.get(c), id, key, d + 1));
+            x.links.put(c, add(x.links.get(c), index, key, d + 1));
             return x;
         }
         List<Long> idsWithPrefix(String prefix) {
@@ -306,20 +306,20 @@ public class GraphDB {
         }
 
         private List<Long> getIds(Trie t) {
-            List<Long> ids = new ArrayList<>();
+            List<Long> indices = new ArrayList<>();
             if (t == null) {
-                return ids;
+                return indices;
             }
-            if (t.id != null) {
-                ids.add(t.id);
-                return ids;
+            if (t.index > 0) {
+                indices.add(t.index);
+                return indices;
             }
             for (Map.Entry<Character, Trie> entry: t.links.entrySet()) {
-                for (Long id: getIds(entry.getValue())) {
-                    ids.add(id);
+                for (Long index: getIds(entry.getValue())) {
+                    indices.add(index);
                 }
             }
-            return ids;
+            return indices;
         }
     }
 }
