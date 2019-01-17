@@ -300,7 +300,7 @@ public class GraphDB {
             for (int i = 0; i < prefix.length(); i += 1) {
                 char c = prefix.charAt(i);
                 if (cur == null) {
-                    return null;
+                    return new Trie();
                 }
                 cur = cur.links.get(c);
             }
@@ -310,7 +310,7 @@ public class GraphDB {
         private List<Long> getIds(Trie t) {
             List<Long> ids = new ArrayList<>();
             if (t == null) {
-                return null;
+                return ids;
             }
             if (t.id != null) {
                 ids.add(t.id);
