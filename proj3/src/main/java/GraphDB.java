@@ -247,6 +247,24 @@ public class GraphDB {
     Trie getNodesTrie() {
         return nodesTrie;
     }
+    List<String> getLocationsByPrefix(String prefix) {
+        List<String> names = new ArrayList<>();
+        List<Long> ids = getNodesTrie().idsWithPrefix(cleanString(prefix));
+        for (long id: ids) {
+            names.add(getNodeName(id));
+        }
+        return names;
+    }
+    List<Map<String, Object>> getLocations(String locationName) {
+        List results = new ArrayList();
+        List<Long> ids = getNodesTrie().idsWithPrefix(cleanString(locationName));
+        for (Long id: ids) {
+            Map<String, GraphDB.Node> item = new HashMap<>();
+            item.put(getNodeName(id), getNode(id));
+            results.add(item);
+        }
+        return results;
+    }
 
     static class Trie {
         Long id;
