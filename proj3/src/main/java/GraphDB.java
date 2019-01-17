@@ -6,12 +6,8 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.*;
+
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
  * Uses your GraphBuildingHandler to convert the XML files into a graph. Your
@@ -26,6 +22,7 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
     private Map<Long, Node> vertices = new LinkedHashMap<>();
     private Map<Long, Way> ways = new LinkedHashMap<>();
+    private Trie nodesTrie = new Trie();
     static class Node {
         long id;
         double lon;
@@ -213,6 +210,11 @@ public class GraphDB {
 
     void addNode(Node n) {
         vertices.put(n.id, n);
+        String name = getNodeName(n.id);
+        if (name != null) {
+            nodesTrie.add(n.id, cleanString(name));
+        }
+
     }
     Node getNode(long id) {
         return vertices.get(id);
@@ -241,5 +243,67 @@ public class GraphDB {
             }
         }
         return "";
+    }
+    Trie getNodesTrie() {
+        return nodesTrie;
+    }
+
+    static class Trie {
+        Long id;
+        Map<Character, Trie> links;
+
+        Trie() {
+            links = new TreeMap<>();
+            id = null;
+        }
+
+        void add(Long id, String key) {
+            add(this, id, key, 0);
+        }
+        private Trie add(Trie x, Long id, String key, int d) {
+            if (x == null) {
+                x = new Trie();
+            }
+            if (d == key.length()) {
+                x.id = id;
+                return x;
+            }
+            char c = key.charAt(d);
+            x.links.put(c, add(x.links.get(c), id, key, d + 1));
+            return x;
+        }
+        List<Long> idsWithPrefix(String prefix) {
+            return getIds(subRoot(prefix));
+
+        }
+
+        private Trie subRoot(String prefix) {
+            Trie cur = this;
+            for (int i = 0; i < prefix.length(); i += 1) {
+                char c = prefix.charAt(i);
+                if (cur == null) {
+                    throw new IllegalArgumentException("Find no matches for this prefix.");
+                }
+                cur = cur.links.get(c);
+            }
+            return cur;
+        }
+
+        private List<Long> getIds(Trie t) {
+            List<Long> ids = new ArrayList<>();
+            if (t == null) {
+                return null;
+            }
+            if (t.id != null) {
+                ids.add(t.id);
+                return ids;
+            }
+            for (Map.Entry<Character, Trie> entry: t.links.entrySet()) {
+                for (Long id: getIds(entry.getValue())) {
+                    ids.add(id);
+                }
+            }
+            return ids;
+        }
     }
 }

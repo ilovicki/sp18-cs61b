@@ -281,79 +281,13 @@ public class MapServer {
      */
     public static List<String> getLocationsByPrefix(String prefix) {
         List<String> names = new ArrayList<>();
-        Trie dic = new Trie();
-        Map<Long, String> idToNames = new HashMap<>();
-        for (Long id: graph.vertices()) {
-            String name = graph.getNodeName(id);
-            if (name != null) {
-                idToNames.put(id, name);
-                dic.add(id, GraphDB.cleanString(name));
-            }
-        }
-        for (Long id: dic.idsWithPrefix(prefix.toLowerCase())) {
-            names.add(idToNames.get(id));
+        List<Long> ids = graph.getNodesTrie().idsWithPrefix(GraphDB.cleanString(prefix));
+        for (long id: ids) {
+            names.add(graph.getNodeName(id));
         }
         return names;
     }
 
-    static class Trie {
-        Long id;
-        Map<Character, Trie> links;
-
-        Trie() {
-            links = new TreeMap<>();
-            id = null;
-        }
-
-        void add(Long id, String key) {
-            add(this, id, key, 0);
-        }
-        private Trie add(Trie x, Long id, String key, int d) {
-            if (x == null) {
-                x = new Trie();
-            }
-            if (d == key.length()) {
-                x.id = id;
-                return x;
-            }
-            char c = key.charAt(d);
-            x.links.put(c, add(x.links.get(c), id, key, d + 1));
-            return x;
-        }
-        List<Long> idsWithPrefix(String prefix) {
-            return getIds(subRoot(prefix));
-
-        }
-
-        private Trie subRoot(String prefix) {
-            Trie cur = this;
-            for (int i = 0; i < prefix.length(); i += 1) {
-                char c = prefix.charAt(i);
-                if (cur == null) {
-                    throw new IllegalArgumentException("Find no matches for this prefix.");
-                }
-                cur = cur.links.get(c);
-            }
-            return cur;
-        }
-
-        private List<Long> getIds(Trie t) {
-            List<Long> ids = new ArrayList<>();
-            if (t == null) {
-                return null;
-            }
-            if (t.id != null) {
-                ids.add(t.id);
-                return ids;
-            }
-            for (Map.Entry<Character, Trie> entry: t.links.entrySet()) {
-                for (Long id: getIds(entry.getValue())) {
-                    ids.add(id);
-                }
-            }
-            return ids;
-        }
-    }
 //    public static void main(String[] args) {
 //        Trie t = new Trie();
 //        t.add(3l, "ant");
@@ -384,14 +318,7 @@ public class MapServer {
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList();
-        Trie dic = new Trie();
-        for (Long id: graph.vertices()) {
-            String name = graph.getNodeName(id);
-            if (name != null) {
-                dic.add(id, GraphDB.cleanString(name));
-            }
-        }
-        List<Long> ids = dic.idsWithPrefix(locationName.toLowerCase());
+        List<Long> ids = graph.getNodesTrie().idsWithPrefix(GraphDB.cleanString(locationName));
         for (Long id: ids) {
             Map<String, GraphDB.Node> item = new HashMap<>();
             item.put(graph.getNodeName(id), graph.getNode(id));
