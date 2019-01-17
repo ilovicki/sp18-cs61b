@@ -217,6 +217,9 @@ public class GraphDB {
     Node getNode(long id) {
         return vertices.get(id);
     }
+    String getNodeName(long id) {
+        return vertices.get(id).extraInfo.get("name");
+    }
 
     void addEdge(Node a, Node b) {
         if (a == null || b == null) {
