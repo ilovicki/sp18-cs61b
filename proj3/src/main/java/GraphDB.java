@@ -248,17 +248,17 @@ public class GraphDB {
     List<String> getLocationsByPrefix(String prefix) {
         List<String> names = new ArrayList<>();
         List<Long> indices = nodesTrie.idsWithPrefix(cleanString(prefix));
-        for (long index: indices) {
-            names.add(getNodeName(index));
+        for (long idx: indices) {
+            names.add(getNodeName(idx));
         }
         return names;
     }
     List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList();
         List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
-        for (long index: indices) {
+        for (long idx: indices) {
             Map<String, Node> item = new HashMap<>();
-            item.put(getNodeName(index), getNode(index));
+            item.put(getNodeName(idx), getNode(idx));
             results.add(item);
         }
         return results;
@@ -273,19 +273,19 @@ public class GraphDB {
             index = -1;
         }
 
-        void add(long index, String key) {
-            add(this, index, key, 0);
+        void add(long idx, String key) {
+            add(this, idx, key, 0);
         }
-        private Trie add(Trie x, long index, String key, int d) {
+        private Trie add(Trie x, long idx, String key, int d) {
             if (x == null) {
                 x = new Trie();
             }
             if (d == key.length()) {
-                x.index = index;
+                x.index = idx;
                 return x;
             }
             char c = key.charAt(d);
-            x.links.put(c, add(x.links.get(c), index, key, d + 1));
+            x.links.put(c, add(x.links.get(c), idx, key, d + 1));
             return x;
         }
         List<Long> idsWithPrefix(String prefix) {
@@ -315,8 +315,8 @@ public class GraphDB {
                 return indices;
             }
             for (Map.Entry<Character, Trie> entry: t.links.entrySet()) {
-                for (Long index: getIds(entry.getValue())) {
-                    indices.add(index);
+                for (Long idx: getIds(entry.getValue())) {
+                    indices.add(idx);
                 }
             }
             return indices;
