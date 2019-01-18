@@ -259,15 +259,15 @@ public class GraphDB {
     }
 
 
-    List<Map<String, String>> getLocations(String locationName) {
+    List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList<Map<String, String>>();
         List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
         for (long idx: indices) {
             String name = getNodeName(idx);
             if (cleanString(name).equals(cleanString(locationName))) {
-                Map<String, String> location = new HashMap<>();
+                Map<String, Object> location = new HashMap<>();
                 location.put("name", name);
-                location.put("id", String.valueOf(idx));
+                location.put("id", idx);
                 results.add(location);
             }
         }
