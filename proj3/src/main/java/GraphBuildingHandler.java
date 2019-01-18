@@ -87,6 +87,8 @@ public class GraphBuildingHandler extends DefaultHandler {
             double lon = Double.parseDouble(attributes.getValue("lon"));
             double lat = Double.parseDouble(attributes.getValue("lat"));
             g.addNode(id, lon, lat);
+            g.addLon(id, lon);
+            g.addLat(id, lat);
             lastNode = id;
 
         } else if (qName.equals("way")) {
@@ -170,8 +172,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                     for (int i = 0; i < size - 1; i += 1) {
                         g.addEdge(g.getNode(tempNodes.get(i)), g.getNode(tempNodes.get(i + 1)));
                     }
-                    GraphDB.Way w = new GraphDB.Way(wayId, tempNodes, wayName, wayType, maxSpeed);
-                    g.addWay(w);
+                    g.addWay(wayId, tempNodes, wayName, wayType, maxSpeed);
                 }
             }
             wayValid = false;

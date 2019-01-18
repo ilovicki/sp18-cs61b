@@ -20,11 +20,13 @@ import java.util.*;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-    private Map<Long, Node> vertices = new LinkedHashMap<>();
-    private Map<Long, Way> ways = new LinkedHashMap<>();
-    private Map<Long, String> nodeNames = new LinkedHashMap<>();
+    private Map<Long, Node> vertices = new HashMap<>();
+    private Map<Long, Way> ways = new HashMap<>();
+    private Map<Long, String> nodeNames = new HashMap<>();
+    private Map<Long, Double> nodeLons = new HashMap<>();
+    private Map<Long, Double> nodeLats = new HashMap<>();
     private Trie nodesTrie = new Trie();
-    static class Node {
+    class Node {
         long id;
         double lon;
         double lat;
@@ -37,7 +39,7 @@ public class GraphDB {
         }
     }
 
-    static class Way {
+    class Way {
         long id;
         String name;
         String type;
@@ -212,6 +214,14 @@ public class GraphDB {
         vertices.put(id, n);
     }
 
+    void addLon(long id, double lon) {
+        nodeLons.put(id, lon);
+    }
+
+    void addLat(long id, double lat) {
+        nodeLats.put(id, lat);
+    }
+
     void addNodeName(long id, String name) {
         nodeNames.put(id, name);
     }
@@ -234,8 +244,9 @@ public class GraphDB {
         a.adj.add(b.id);
         b.adj.add(a.id);
     }
-    void addWay(Way w) {
-        ways.put(w.id, w);
+    void addWay(long id, ArrayList<Long> nodes, String name, String type, String maxSpeed) {
+        Way w = new Way(id, nodes, name, type, maxSpeed);
+        ways.put(id, w);
     }
     String getName(long nodeA, long nodeB) {
         for (Way w: ways.values()) {
@@ -260,12 +271,14 @@ public class GraphDB {
 
 
     List<Map<String, Object>> getLocations(String locationName) {
-        List results = new ArrayList<Map<String, String>>();
+        List results = new ArrayList<Map<String, Object>>();
         List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
-        for (long idx: indices) {
+        for (Long idx: indices) {
             String name = getNodeName(idx);
             if (cleanString(name).equals(cleanString(locationName))) {
                 Map<String, Object> location = new HashMap<>();
+                location.put("lon", nodeLons.get(idx));
+                location.put("lat", nodeLats.get(idx));
                 location.put("name", name);
                 location.put("id", idx);
                 results.add(location);
@@ -274,7 +287,7 @@ public class GraphDB {
         return results;
     }
 
-    static class Trie {
+    class Trie {
         Queue<Long> ids;
         Map<Character, Trie> links;
 
