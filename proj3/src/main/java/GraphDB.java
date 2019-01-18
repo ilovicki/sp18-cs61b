@@ -276,12 +276,12 @@ public class GraphDB {
     }
 
     static class Trie {
-        long index;
+        Queue<Long> ids;
         Map<Character, Trie> links;
 
         Trie() {
             links = new HashMap<>();
-            index = -1;
+            ids = new ArrayDeque<>();
         }
 
         void add(long idx, String key) {
@@ -292,7 +292,7 @@ public class GraphDB {
                 x = new Trie();
             }
             if (d == key.length()) {
-                x.index = idx;
+                x.ids.add(idx);
                 return x;
             }
             char c = key.charAt(d);
@@ -321,12 +321,14 @@ public class GraphDB {
             if (t == null) {
                 return indices;
             }
-            if (t.index > 0) {
-                indices.add(t.index);
+            if (!t.ids.isEmpty()) {
+                for (long idx: t.ids) {
+                    indices.add(idx);
+                }
                 return indices;
             }
-            for (Map.Entry<Character, Trie> entry: t.links.entrySet()) {
-                for (Long idx: getIds(entry.getValue())) {
+            for (Trie trie: t.links.values()) {
+                for (Long idx: getIds(trie)) {
                     indices.add(idx);
                 }
             }
