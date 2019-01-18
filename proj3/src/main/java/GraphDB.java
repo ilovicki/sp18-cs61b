@@ -22,19 +22,18 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
     private Map<Long, Node> vertices = new LinkedHashMap<>();
     private Map<Long, Way> ways = new LinkedHashMap<>();
+    private Map<Long, String> nodeNames = new LinkedHashMap<>();
     private Trie nodesTrie = new Trie();
     static class Node {
         long id;
         double lon;
         double lat;
         Set<Long> adj;
-        Map<String, String> extraInfo;
         Node(long id, double lon, double lat) {
             this.id = id;
             this.lon = lon;
             this.lat = lat;
             this.adj = new HashSet<>();
-            this.extraInfo = new HashMap<>();
         }
     }
 
@@ -210,17 +209,21 @@ public class GraphDB {
 
     void addNode(Node n) {
         vertices.put(n.id, n);
-        String name = n.extraInfo.get("name");
-        if (name != null) {
-            nodesTrie.add(n.id, cleanString(name));
-        }
+    }
 
+    void addNodeName(long id, String name) {
+        nodeNames.put(id, name);
+    }
+
+    void addToTrie(long id, String name) {
+        nodesTrie.add(id, name);
     }
     Node getNode(long id) {
         return vertices.get(id);
     }
     String getNodeName(long id) {
-        return vertices.get(id).extraInfo.get("name");
+        return nodeNames.get(id);
+
     }
 
     void addEdge(Node a, Node b) {
@@ -269,7 +272,7 @@ public class GraphDB {
         Map<Character, Trie> links;
 
         Trie() {
-            links = new TreeMap<>();
+            links = new HashMap<>();
             index = -1;
         }
 
