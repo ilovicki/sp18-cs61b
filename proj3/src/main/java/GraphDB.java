@@ -256,13 +256,21 @@ public class GraphDB {
         }
         return names;
     }
+
+
     List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList();
         List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
         for (long idx: indices) {
-            Map<String, Node> item = new HashMap<>();
-            item.put(getNodeName(idx), getNode(idx));
-            results.add(item);
+            String name = getNodeName(idx);
+            if (cleanString(name).equals(cleanString(locationName))) {
+                Map<String, Object> location = new HashMap<>();
+                location.put("lat", lat(idx));
+                location.put("lon", lon(idx));
+                location.put("name", name);
+                location.put("id", idx);
+                results.add(location);
+            }
         }
         return results;
     }
