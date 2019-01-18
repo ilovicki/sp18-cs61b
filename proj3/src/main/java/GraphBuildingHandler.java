@@ -39,7 +39,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                     "secondary_link", "tertiary_link"));
     private String activeState = "";
     private final GraphDB g;
-    private GraphDB.Node lastNode;
+    private long lastNode;
     private Long wayId;
     private boolean wayValid;
     private String wayName;
@@ -86,9 +86,8 @@ public class GraphBuildingHandler extends DefaultHandler {
             long id = Long.parseLong(attributes.getValue("id"));
             double lon = Double.parseDouble(attributes.getValue("lon"));
             double lat = Double.parseDouble(attributes.getValue("lat"));
-            GraphDB.Node n = new GraphDB.Node(id, lon, lat);
-            g.addNode(n);
-            lastNode = n;
+            g.addNode(id, lon, lat);
+            lastNode = id;
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
@@ -140,10 +139,9 @@ public class GraphBuildingHandler extends DefaultHandler {
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
             last node that you looked at (check the first if-case). */
 //            System.out.println("Node's name: " + attributes.getValue("v"));
-            String k = "name";
             String v = attributes.getValue("v");
-            g.addNodeName(lastNode.id, v);
-            g.addToTrie(lastNode.id, GraphDB.cleanString(v));
+            g.addNodeName(lastNode, v);
+            g.addToTrie(lastNode, GraphDB.cleanString(v));
 
         }
     }

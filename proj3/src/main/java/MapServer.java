@@ -150,7 +150,7 @@ public class MapServer {
             Gson gson = new Gson();
             /* Search for actual location data. */
             if (reqParams.contains("full")) {
-                List<Map<String, Object>> data = getLocations(term);
+                List<Map<String, String>> data = getLocations(term);
                 return gson.toJson(data);
             } else {
                 /* Search for prefix matching strings. */
@@ -311,7 +311,7 @@ public class MapServer {
      * "name" : String, The actual name of the node. <br>
      * "id" : Number, The id of the node. <br>
      */
-    public static List<Map<String, Object>> getLocations(String locationName) {
+    public static List<Map<String, String>> getLocations(String locationName) {
         return graph.getLocations(locationName);
     }
 
