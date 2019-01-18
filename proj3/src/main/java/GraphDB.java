@@ -272,17 +272,14 @@ public class GraphDB {
 
     List<Map<String, Object>> getLocations(String locationName) {
         List results = new ArrayList<Map<String, Object>>();
-        List<Long> indices = nodesTrie.idsWithPrefix(cleanString(locationName));
-        for (Long idx: indices) {
-            String name = getNodeName(idx);
-            if (cleanString(name).equals(cleanString(locationName))) {
-                Map<String, Object> location = new HashMap<>();
-                location.put("lon", nodeLons.get(idx));
-                location.put("lat", nodeLats.get(idx));
-                location.put("name", name);
-                location.put("id", idx);
-                results.add(location);
-            }
+        Trie root = nodesTrie.subRoot(cleanString(locationName));
+        for (long idx: root.ids) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", idx);
+            item.put("name", getNodeName(idx));
+            item.put("lon", nodeLons.get(idx));
+            item.put("lat", nodeLats.get(idx));
+            results.add(item);
         }
         return results;
     }
