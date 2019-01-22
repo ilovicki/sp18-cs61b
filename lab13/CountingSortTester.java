@@ -53,6 +53,16 @@ public class CountingSortTester {
         assertIsSorted(sortedSomeNegative);
     }
 
+    @Test
+    public void testRadixSort() {
+        String[] origin = {"cat", "apple", "duck", "banana"};
+        String[] expected = {"apple", "banana", "cat", "duck"};
+        String[] actual = RadixSort.sort(origin);
+        for (int i = 0; i < origin.length; i += 1) {
+            assertTrue(expected[i].equals(actual[i]));
+        }
+    }
+
 
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(CountingSortTester.class);
