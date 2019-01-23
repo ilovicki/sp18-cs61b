@@ -14,7 +14,7 @@ public class SeamCarver {
         energies = new double[width][height];
         for (int i = 0; i < width; i += 1) {
             for (int j = 0; j < height; j += 1) {
-                pixels[i][j] = picture.getRGB(i, j);
+                pixels[i][j] = current.getRGB(i, j);
             }
         }
         calcEnergies();
