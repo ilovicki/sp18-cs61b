@@ -1,5 +1,5 @@
 import edu.princeton.cs.algs4.Picture;
-
+import java.awt.Color;
 public class SeamCarver {
     private Picture current;
     private int width;
@@ -14,7 +14,8 @@ public class SeamCarver {
         energies = new double[width][height];
         for (int i = 0; i < width; i += 1) {
             for (int j = 0; j < height; j += 1) {
-                pixels[i][j] = current.getRGB(i, j);
+                pixels[i][j] = picture.getRGB(i, j);
+
             }
         }
         calcEnergies();
@@ -253,6 +254,5 @@ public class SeamCarver {
         width -= 1;
         updatePixelsAndEnergies(seam, false);
         updatePic();
-
     }
 }
