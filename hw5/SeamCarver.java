@@ -1,4 +1,5 @@
 import edu.princeton.cs.algs4.Picture;
+
 public class SeamCarver {
     private Picture current;
     private int width;
@@ -109,7 +110,7 @@ public class SeamCarver {
             for (int j = 0; j < H; j += 1) {
                 if (i == 0) {
                     minCost[i][j] = eners[i][j];
-                }else if (j == 0) {
+                } else if (j == 0) {
                     minCost[i][j] = eners[i][j] + Math.min(minCost[i - 1][j],
                             minCost[i - 1][j + 1]);
                 } else if (j == H - 1) {
