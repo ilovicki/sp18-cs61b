@@ -5,12 +5,11 @@ public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
         this.picture = new Picture(picture);
-
     }
 
     // current picture
     public Picture picture() {
-        return this.picture;
+        return new Picture(picture);
     }
 
     // width of current picture
@@ -142,6 +141,7 @@ public class SeamCarver {
 
     public void removeHorizontalSeam(int[] seam) {
         picture = SeamRemover.removeHorizontalSeam(picture, findHorizontalSeam());
+
     }
 
     // remove vertical seam from picture
