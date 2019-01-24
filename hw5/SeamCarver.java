@@ -4,13 +4,13 @@ import java.awt.Color;
 public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
 
     }
 
     // current picture
     public Picture picture() {
-        return SCUtility.toEnergyPicture(this);
+        return this.picture;
     }
 
     // width of current picture
