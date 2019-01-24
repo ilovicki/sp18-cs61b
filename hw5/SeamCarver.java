@@ -4,13 +4,13 @@ import java.awt.Color;
 public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
-        this.picture = new Picture(picture);
+        this.picture = picture;
 
     }
 
     // current picture
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     // width of current picture
@@ -20,7 +20,7 @@ public class SeamCarver {
 
     // height of current picture
     public int height() {
-        return picture.height();
+        return picture().height();
     }
 
     // energy of pixel at column x and row y
@@ -30,27 +30,27 @@ public class SeamCarver {
         }
         Color left, right, below, above;
         if (x == 0) {
-            left = picture.get(width() - 1, y);
+            left = picture().get(width() - 1, y);
         } else {
-            left = picture.get(x - 1, y);
+            left = picture().get(x - 1, y);
         }
 
         if (x == width() - 1) {
-            right = picture.get(0, y);
+            right = picture().get(0, y);
         } else {
-            right = picture.get(x + 1, y);
+            right = picture().get(x + 1, y);
         }
 
         if (y == 0) {
-            below = picture.get(x, height() - 1);
+            below = picture().get(x, height() - 1);
         } else {
-            below = picture.get(x, y - 1);
+            below = picture().get(x, y - 1);
         }
 
         if (y == height() - 1) {
-            above = picture.get(x, 0);
+            above = picture().get(x, 0);
         } else {
-            above = picture.get(x, y + 1);
+            above = picture().get(x, y + 1);
         }
         int difXR = right.getRed() - left.getRed();
         int difXG = right.getGreen() - left.getGreen();
