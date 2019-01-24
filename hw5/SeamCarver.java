@@ -1,123 +1,86 @@
 import edu.princeton.cs.algs4.Picture;
-public class SeamCarver {
-    private Picture current;
-    private int width;
-    private int height;
-    private int[][] pixels;
-    private double[][] energies;
-    public SeamCarver(Picture picture) {
-        current = picture;
-        width = picture.width();
-        height = picture.height();
-        pixels = new int[width][height];
-        energies = new double[width][height];
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                pixels[i][j] = picture.getRGB(i, j);
+import java.awt.Color;
 
-            }
-        }
-        calcEnergies();
+public class SeamCarver {
+    private Picture picture;
+    public SeamCarver(Picture picture) {
+        this.picture = picture;
+
     }
 
     // current picture
     public Picture picture() {
-        return current;
+        return picture;
     }
 
     // width of current picture
     public int width() {
-        return width;
+        return picture.width();
     }
 
     // height of current picture
     public int height() {
-        return height;
+        return picture.height();
     }
 
-    private double getEnergy(int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1) {
+    // energy of pixel at column x and row y
+    public double energy(int x, int y) {
+        if (x < 0 || x > width() - 1 || y < 0 || y > height() - 1) {
             throw new IndexOutOfBoundsException();
         }
-        int left, right, below, above;
+        Color left, right, below, above;
         if (x == 0) {
-            left = pixels[width - 1][y];
+            left = picture.get(width() - 1, y);
         } else {
-            left = pixels[x - 1][y];
+            left = picture.get(x - 1, y);
         }
 
-        if (x == width - 1) {
-            right = pixels[0][y];
+        if (x == width() - 1) {
+            right = picture.get(0, y);
         } else {
-            right = pixels[x + 1][y];
+            right = picture.get(x + 1, y);
         }
 
         if (y == 0) {
-            below = pixels[x][height - 1];
+            below = picture.get(x, height() - 1);
         } else {
-            below = pixels[x][y - 1];
+            below = picture.get(x, y - 1);
         }
 
-        if (y == height - 1) {
-            above = pixels[x][0];
+        if (y == height() - 1) {
+            above = picture.get(x, 0);
         } else {
-            above = pixels[x][y + 1];
+            above = picture.get(x, y + 1);
         }
-        int leftR = (left >> 16) & 0xFF;
-        int leftG = (left >> 8) & 0xFF;
-        int leftB = left & 0xFF;
-        int rightR = (right >> 16) & 0xFF;
-        int rightG = (right >> 8) & 0xFF;
-        int rightB = right & 0xFF;
-        int difXR = rightR - leftR;
-        int difXG = rightG - leftG;
-        int difXB = rightB - leftB;
+        int difXR = right.getRed() - left.getRed();
+        int difXG = right.getGreen() - left.getGreen();
+        int difXB = right.getBlue() - left.getBlue();
         int difX2 = difXR * difXR + difXG * difXG + difXB * difXB;
-        int belowR = (below >> 16) & 0xFF;
-        int belowG = (below >> 8) & 0xFF;
-        int belowB = below & 0xFF;
-        int aboveR = (above >> 16) & 0xFF;
-        int aboveG = (above >> 8) & 0xFF;
-        int aboveB = above & 0xFF;
-        int difYR = aboveR - belowR;
-        int difYG = aboveG - belowG;
-        int difYB = aboveB - belowB;
+
+        int difYR = above.getRed() - below.getRed();
+        int difYG = above.getGreen() - below.getGreen();
+        int difYB = above.getBlue() - below.getBlue();
         int difY2 = difYR * difYR + difYG * difYG + difYB * difYB;
         int energy = difX2 + difY2;
         return energy;
     }
 
-    private void calcEnergies() {
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                energies[i][j] = getEnergy(i, j);
-            }
-        }
-    }
-
-    // energy of pixel at column x and row y
-    public double energy(int x, int y) {
-        return energies[x][y];
-    }
-
-
-
-    private int[] calcMinCost(double[][] eners) {
-        int W = eners.length;
-        int H = eners[0].length;
+    private int[] calcMinCost(double[][] energies) {
+        int W = energies.length;
+        int H = energies[0].length;
         double[][] minCost = new double[W][H];
         for (int i = 0; i < W; i += 1) {
             for (int j = 0; j < H; j += 1) {
                 if (i == 0) {
-                    minCost[i][j] = eners[i][j];
+                    minCost[i][j] = energies[i][j];
                 } else if (j == 0) {
-                    minCost[i][j] = eners[i][j] + Math.min(minCost[i - 1][j],
+                    minCost[i][j] = energies[i][j] + Math.min(minCost[i - 1][j],
                             minCost[i - 1][j + 1]);
                 } else if (j == H - 1) {
-                    minCost[i][j] = eners[i][j] + Math.min(minCost[i - 1][j],
+                    minCost[i][j] = energies[i][j] + Math.min(minCost[i - 1][j],
                             minCost[i - 1][j - 1]);
                 } else {
-                    minCost[i][j] = eners[i][j] + Math.min(minCost[i - 1][j],
+                    minCost[i][j] = energies[i][j] + Math.min(minCost[i - 1][j],
                             Math.min(minCost[i - 1][j - 1], minCost[i - 1][j + 1]));
                 }
             }
@@ -135,7 +98,7 @@ public class SeamCarver {
         seam[W - 1] = end;
         for (int i = W - 2; i >= 0; i -= 1) {
             int last = seam[i + 1];
-            double curCost = minCost[i + 1][last] - eners[i + 1][last];
+            double curCost = minCost[i + 1][last] - energies[i + 1][last];
             if (minCost[i][last] == curCost) {
                 seam[i] = last;
             } else if (last > 0 && minCost[i][last - 1] == curCost) {
@@ -152,106 +115,33 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
+        double[][] energies = SCUtility.toEnergyMatrix(this);
         return calcMinCost(energies);
 
     }
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
-        double[][] energiesV = new double[height][width];
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                energiesV[j][i] = energies[i][j];
+        double[][] energies = SCUtility.toEnergyMatrix(this);
+        int w = energies.length;
+        int h = energies[0].length;
+        double[][] transposed = new double[h][w];
+        for (int i = 0; i < w; i += 1) {
+            for (int j = 0; j < h; j += 1) {
+                transposed[j][i] = energies[i][j];
             }
         }
-        return calcMinCost(energiesV);
+        return calcMinCost(transposed);
     }
 
     // remove horizontal seam from picture
-    private void validateSeam(int[] seam, int len) {
-        if (seam.length != len) {
-            throw new IllegalArgumentException();
-        }
-        for (int i = 0; i < len - 1; i += 1) {
-            int dif = seam[i + 1] - seam[i];
-            if (dif < -1 || dif > 1) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    private void updatePixelsAndEnergies(int[] seam, boolean hori) {
-        int[][] tempPixels = new int[width][height];
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                if (hori) {
-                    if (j < seam[i]) {
-                        tempPixels[i][j] = pixels[i][j];
-                    } else {
-                        tempPixels[i][j] = pixels[i][j + 1];
-                    }
-                } else {
-                    if (i < seam[j]) {
-                        tempPixels[i][j] = pixels[i][j];
-                    } else {
-                        tempPixels[i][j] = pixels[i + 1][j];
-                    }
-                }
-
-            }
-        }
-        pixels = tempPixels;
-
-        double[][] tempEnergies = new double[width][height];
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                if (hori) {
-                    if (seam[i] - j > 1) {
-                        tempEnergies[i][j] = energies[i][j];
-                    }
-                    if (seam[i] - j == 1 || seam[i] == j) {
-                        tempEnergies[i][j] = energy(i, j);
-                    } else {
-                        tempEnergies[i][j] = energies[i][j + 1];
-                    }
-                } else {
-                    if (seam[j] - i > 1) {
-                        tempEnergies[i][j] = energies[i][j];
-                    }
-                    if (seam[j] - i == 1 || seam[j] == i) {
-                        tempEnergies[i][j] = energy(i, j);
-                    } else {
-                        tempEnergies[i][j] = energies[i + 1][j];
-                    }
-                }
-
-            }
-        }
-        energies = tempEnergies;
-    }
-
-    private void updatePic() {
-        Picture pic = new Picture(width, height);
-        for (int i = 0; i < width; i += 1) {
-            for (int j = 0; j < height; j += 1) {
-                pic.setRGB(i, j, pixels[i][j]);
-            }
-        }
-        current = pic;
-    }
 
     public void removeHorizontalSeam(int[] seam) {
-        validateSeam(seam, width);
-        height -= 1;
-        updatePixelsAndEnergies(seam, true);
-        updatePic();
+        picture = SeamRemover.removeHorizontalSeam(picture, findHorizontalSeam());
     }
 
     // remove vertical seam from picture
     public void removeVerticalSeam(int[] seam) {
-        validateSeam(seam, height);
-        width -= 1;
-        updatePixelsAndEnergies(seam, false);
-        updatePic();
+        picture = SeamRemover.removeVerticalSeam(picture, findVerticalSeam());
     }
 }
