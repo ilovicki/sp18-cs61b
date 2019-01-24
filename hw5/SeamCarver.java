@@ -10,7 +10,7 @@ public class SeamCarver {
 
     // current picture
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     // width of current picture
@@ -69,6 +69,10 @@ public class SeamCarver {
         int W = energies.length;
         int H = energies[0].length;
         double[][] minCost = new double[W][H];
+        int[] seam = new int[W];
+        if (H == 1) {
+            return seam;
+        }
         for (int i = 0; i < W; i += 1) {
             for (int j = 0; j < H; j += 1) {
                 if (i == 0) {
@@ -94,7 +98,7 @@ public class SeamCarver {
                 end = j;
             }
         }
-        int[] seam = new int[W];
+
         seam[W - 1] = end;
         for (int i = W - 2; i >= 0; i -= 1) {
             int last = seam[i + 1];
