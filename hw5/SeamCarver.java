@@ -1,4 +1,4 @@
-//import edu.princeton.cs.algs4.Picture;
+import edu.princeton.cs.algs4.Picture;
 public class SeamCarver {
     private Picture current;
     private int width;
