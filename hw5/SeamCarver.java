@@ -4,7 +4,7 @@ import java.awt.Color;
 public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
-        this.picture = new Picture(picture);
+        this.picture = picture;
 
     }
 
