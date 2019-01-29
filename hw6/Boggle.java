@@ -68,8 +68,8 @@ public class Boggle {
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
         int interval = 1;
-        if (N > 10) {
-            interval = N / 10;
+        if (N > 5) {
+            interval = N / 5;
         }
         for (int i = 0; i < N; i += interval) {
             int start = i * M;
@@ -137,7 +137,8 @@ public class Boggle {
         }
     }
 
-    private static Set<String> getStrings(int start, int end, Trie dic, char[] board, int n, int m) {
+    private static Set<String> getStrings(int start, int end, Trie dic,
+                                          char[] board, int n, int m) {
         Set<String> strs = new HashSet<>();
         ArrayDeque<Node> queue = new ArrayDeque<>();
         for (int i = start; i < end; i += 1) {
