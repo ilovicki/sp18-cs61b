@@ -137,13 +137,8 @@ public class Boggle {
                 continue;
             }
             trie = trie.links.get(c);
-            if (trie.exists) {
-                String curStr = "";
-                for (int i: curSaw) {
-                    curStr += board[i];
-                }
-                curStr += c;
-                strs.add(curStr);
+            if (trie.item != null) {
+                strs.add(trie.item);
             }
             List<Integer> nextSaw = new ArrayList<>(curSaw);
             nextSaw.add(index);
@@ -155,7 +150,7 @@ public class Boggle {
                 }
             }
         }
-       return strs;
+        return strs;
     }
 
     private static List<Integer> neighbor(int current, int n, int m) {

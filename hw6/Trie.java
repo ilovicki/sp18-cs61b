@@ -1,10 +1,10 @@
 import java.util.HashMap;
 import java.util.Map;
 public class Trie {
-    boolean exists;
+    String item;
     Map<Character, Trie> links;
     public Trie() {
-        exists = false;
+        item = null;
         links = new HashMap<>();
     }
     public void add(String s) {
@@ -15,7 +15,7 @@ public class Trie {
             t = new Trie();
         }
         if (d == s.length()) {
-            t.exists = true;
+            t.item = s;
             return t;
         }
         char c = s.charAt(d);
