@@ -112,21 +112,30 @@ public class Boggle {
 //        return strs;
 //    }
 
+    private static class Node {
+        int id;
+        Trie ref;
+        List<Integer> saw;
+        Node(int id, Trie ref, List<Integer> saw) {
+            this.id = id;
+            this.ref = ref;
+            this.saw = saw;
+        }
+    }
+
     private static Set<String> getStrings(Trie dic, char[] board, int n, int m) {
         Set<String> strs = new HashSet<>();
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        ArrayDeque<Trie> tries = new ArrayDeque<>();
-        ArrayDeque<List<Integer>> saw = new ArrayDeque<>();
+        ArrayDeque<Node> queue = new ArrayDeque<>();
         for (int i = 0; i < board.length; i += 1) {
-            queue.addLast(i);
-            tries.addLast(dic);
             List<Integer> ithSaw = new ArrayList<>();
-            saw.addLast(ithSaw);
+            Node node = new Node(i, dic, ithSaw);
+            queue.addLast(node);
         }
         while (!queue.isEmpty()) {
-            int index = queue.pollFirst();
-            Trie trie = tries.pollFirst();
-            List<Integer> curSaw = saw.pollFirst();
+            Node cur = queue.pollFirst();
+            int index = cur.id;
+            Trie trie = cur.ref;
+            List<Integer> curSaw = cur.saw;
             char c = board[index];
             if (trie == null || !trie.links.containsKey(c)) {
                 continue;
@@ -144,9 +153,7 @@ public class Boggle {
             nextSaw.add(index);
             for (int i: neighbor(index, n, m)) {
                 if (!nextSaw.contains(i)) {
-                    queue.addLast(i);
-                    tries.addLast(trie);
-                    saw.addLast(nextSaw);
+                    queue.addLast(new Node(i, trie, nextSaw));
                 }
             }
         }
