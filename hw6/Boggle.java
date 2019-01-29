@@ -67,13 +67,9 @@ public class Boggle {
 
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
-        for (int i = 0; i < board.length; i += 1) {
-            Set<String> startAtI = getStrings(i, dict, board, N, M);
-            for (String s: startAtI) {
-                if (!pq.contains(s)) {
-                    pq.add(s);
-                }
-            }
+        Set<String> words = getStrings(dict, board, N, M);
+        for (String word: words) {
+            pq.add(word);
         }
 
         List<String> results = new ArrayList<>();
@@ -116,18 +112,17 @@ public class Boggle {
 //        return strs;
 //    }
 
-    private static Set<String> getStrings(int start, Trie dic, char[] board, int n, int m) {
-        if (start < 0 || start > board.length - 1) {
-            throw new IllegalArgumentException();
-        }
+    private static Set<String> getStrings(Trie dic, char[] board, int n, int m) {
         Set<String> strs = new HashSet<>();
         ArrayDeque<Integer> queue = new ArrayDeque<>();
         ArrayDeque<Trie> tries = new ArrayDeque<>();
         ArrayDeque<List<Integer>> saw = new ArrayDeque<>();
-        queue.addLast(start);
-        tries.addLast(dic);
-        List<Integer> ithSaw = new ArrayList<>();
-        saw.addLast(ithSaw);
+        for (int i = 0; i < board.length; i += 1) {
+            queue.addLast(i);
+            tries.addLast(dic);
+            List<Integer> ithSaw = new ArrayList<>();
+            saw.addLast(ithSaw);
+        }
         while (!queue.isEmpty()) {
             int index = queue.pollFirst();
             Trie trie = tries.pollFirst();
@@ -137,8 +132,13 @@ public class Boggle {
                 continue;
             }
             trie = trie.links.get(c);
-            if (trie.item != null) {
-                strs.add(trie.item);
+            if (trie.exists) {
+                String curStr = "";
+                for (int i: curSaw) {
+                    curStr += board[i];
+                }
+                curStr += c;
+                strs.add(curStr);
             }
             List<Integer> nextSaw = new ArrayList<>(curSaw);
             nextSaw.add(index);
