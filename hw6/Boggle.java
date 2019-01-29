@@ -49,7 +49,7 @@ public class Boggle {
         int N = 0;
         int M = 0;
         int tempM = 0;
-        while(inBoard.hasNextChar()) {
+        while (inBoard.hasNextChar()) {
             char c = inBoard.readChar();
             if (c == '\n') {
                 if (N > 0 && tempM != M) {
@@ -72,7 +72,7 @@ public class Boggle {
         }
 
 
-        PriorityQueue<String> pq = new PriorityQueue(new strCmp());
+        PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
         for (int i = 0; i < board.size(); i += 1) {
             List<Integer> visited = new ArrayList<>();
             String pre = "";
@@ -112,8 +112,12 @@ public class Boggle {
                 strs.add(pre);
             }
             for (int j: neighbor(start, n, m)) {
-                if (!visited.contains(j)) {
-                    Set<String> next = getStrings(j, trie, board, visited, pre, n, m);
+                List<Integer> jthVisited = new ArrayList<>();
+                for (int p: visited) {
+                    jthVisited.add(p);
+                }
+                if (!jthVisited.contains(j)) {
+                    Set<String> next = getStrings(j, trie, board, jthVisited, pre, n, m);
                     for (String s: next) {
                         strs.add(s);
                     }
@@ -159,7 +163,7 @@ public class Boggle {
 
 
 
-    static class strCmp implements Comparator<String> {
+    static class StrCmp implements Comparator<String> {
         @Override
         public int compare(String a, String b) {
             int la = a.length();
