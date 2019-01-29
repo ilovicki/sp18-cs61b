@@ -1,11 +1,5 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Comparator;
+import java.util.*;
+
 import edu.princeton.cs.algs4.In;
 
 public class Boggle {
@@ -69,7 +63,7 @@ public class Boggle {
         for (int i = 0; i < board.length; i += 1) {
             List<Integer> visited = new ArrayList<>();
             String pre = "";
-            Set<String> startAtI = getStrings(i, dict, board, visited, pre, N, M);
+            Set<String> startAtI = getStrings(i, dict, board, N, M);
             for (String s: startAtI) {
 
                 if (!pq.contains(s)) {
@@ -89,32 +83,76 @@ public class Boggle {
         return results;
     }
 
-    private static Set<String> getStrings(int start, Trie dic, char[] board,
-                                           List<Integer> visited, String pre, int n, int m) {
+    //recursive solution
+//    private static Set<String> getStrings(int start, Trie dic, char[] board,
+//                                           List<Integer> visited, String pre, int n, int m) {
+//        if (start < 0 || start > board.length - 1) {
+//            throw new IllegalArgumentException();
+//        }
+//        Set<String> strs = new HashSet<>();
+//        Trie trie = dic;
+//        char c = board[start];
+//        if (trie != null && trie.links.containsKey(c)) {
+//            trie = trie.links.get(c);
+//            visited.add(start);
+//            pre += c;
+//            if (trie.exists) {
+//                strs.add(pre);
+//            }
+//            for (int j: neighbor(start, n, m)) {
+//                List<Integer> jthVisited = new ArrayList<>(visited);
+//                if (!jthVisited.contains(j)) {
+//                    Set<String> next = getStrings(j, trie, board, jthVisited, pre, n, m);
+//                    for (String s: next) {
+//                        strs.add(s);
+//                    }
+//                }
+//            }
+//        }
+//        return strs;
+//    }
+
+    private static Set<String> getStrings(int start, Trie dic, char[] board, int n, int m) {
         if (start < 0 || start > board.length - 1) {
             throw new IllegalArgumentException();
         }
         Set<String> strs = new HashSet<>();
-        Trie trie = dic;
-        char c = board[start];
-        if (trie != null && trie.links.containsKey(c)) {
-            trie = trie.links.get(c);
-            visited.add(start);
-            pre += c;
-            if (trie.exists) {
-                strs.add(pre);
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        ArrayDeque<Trie> tries = new ArrayDeque<>();
+        ArrayDeque<List<Integer>> saw = new ArrayDeque<>();
+        queue.addLast(start);
+        tries.addLast(dic);
+        List<Integer> ithSaw = new ArrayList<>();
+        saw.addLast(ithSaw);
+        while (!queue.isEmpty()) {
+            int index = queue.pollFirst();
+            Trie trie = tries.pollFirst();
+            List<Integer> curSaw = saw.pollFirst();
+            char c = board[index];
+            if (trie == null || !trie.links.containsKey(c)) {
+                continue;
             }
-            for (int j: neighbor(start, n, m)) {
-                List<Integer> jthVisited = new ArrayList<>(visited);
-                if (!jthVisited.contains(j)) {
-                    Set<String> next = getStrings(j, trie, board, jthVisited, pre, n, m);
-                    for (String s: next) {
-                        strs.add(s);
-                    }
+            trie = trie.links.get(c);
+            if (trie.exists) {
+                String curStr = "";
+                for (int i: curSaw) {
+                    curStr += board[i];
+                }
+                curStr += c;
+                strs.add(curStr);
+            }
+            List<Integer> nextSaw = new ArrayList<>(curSaw);
+            nextSaw.add(index);
+            for (int i: neighbor(index, n, m)) {
+                if (!nextSaw.contains(i)) {
+                    queue.addLast(i);
+                    tries.addLast(trie);
+                    saw.addLast(nextSaw);
                 }
             }
+
         }
-        return strs;
+       return strs;
     }
 
     private static List<Integer> neighbor(int current, int n, int m) {
@@ -168,7 +206,7 @@ public class Boggle {
 
     public static void main(String[] args) {
         int k = 7;
-        String boardFilePath = "exampleBoard.txt";
+        String boardFilePath = "smallBoard.txt";
         List<String> result = solve(k, boardFilePath);
         for (int i = 0; i < result.size(); i += 1) {
             if (i == 0) {
