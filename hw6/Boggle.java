@@ -67,10 +67,16 @@ public class Boggle {
 
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
-        Set<String> words = getStrings(dict, board, N, M);
-        for (String word: words) {
-            pq.add(word);
+        for (int i = 0; i < N; i += 1) {
+            Set<String> words = getStrings(i, dict, board, N, M);
+            for (String word: words) {
+                if (!pq.contains(word)) {
+                    pq.add(word);
+                }
+
+            }
         }
+
 
         List<String> results = new ArrayList<>();
         for (int i = 0; i < k; i += 1) {
@@ -123,10 +129,10 @@ public class Boggle {
         }
     }
 
-    private static Set<String> getStrings(Trie dic, char[] board, int n, int m) {
+    private static Set<String> getStrings(int ithRow, Trie dic, char[] board, int n, int m) {
         Set<String> strs = new HashSet<>();
         ArrayDeque<Node> queue = new ArrayDeque<>();
-        for (int i = 0; i < board.length; i += 1) {
+        for (int i = ithRow * m; i < (ithRow + 1) * m; i += 1) {
             List<Integer> ithSaw = new ArrayList<>();
             Node node = new Node(i, dic, ithSaw);
             queue.addLast(node);
