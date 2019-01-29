@@ -38,9 +38,9 @@ public class Boggle {
                 throw new IllegalArgumentException("The dictionary file does not exist.");
             }
             Trie dict = new Trie();
-            while (!inDic.isEmpty()) {
-                String s = inDic.readString();
-                dict.add(s);
+            String[] words = inDic.readAllStrings();
+            for (String word: words) {
+                dict.add(word);
             }
             inDic.close();
             dictMap.put(dictPath, dict);
@@ -51,35 +51,22 @@ public class Boggle {
         if (!inBoard.exists()) {
             return null;
         }
-        ArrayList<Character> board = new ArrayList<>();
-        int N = 0;
-        int M = 0;
-        int tempM = 0;
-        while (inBoard.hasNextChar()) {
-            char c = inBoard.readChar();
-            if (c == '\n') {
-                if (N > 0 && tempM != M) {
-                    throw new IllegalArgumentException("Illegal board!");
-                }
-                N += 1;
-                tempM = 0;
-            } else {
-                board.add(c);
-                if (N == 0) {
-                    M += 1;
-                } else {
-                    tempM += 1;
-                }
+        String[] boardStr = inBoard.readAllStrings();
+        int N = boardStr.length;
+        int M = boardStr[0].length();
+        char[] board = new char[N * M];
+        for (int i = 0; i < N; i += 1) {
+            char[] temp = boardStr[i].toCharArray();
+            if (temp.length != M) {
+                throw new IllegalArgumentException("Illegal board!");
             }
+            System.arraycopy(temp, 0, board, i * M, M);
         }
         inBoard.close();
-        if (N == 0 || M == 0) {
-            throw new IllegalArgumentException("Illegal board.");
-        }
 
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
-        for (int i = 0; i < board.size(); i += 1) {
+        for (int i = 0; i < board.length; i += 1) {
             List<Integer> visited = new ArrayList<>();
             String pre = "";
             Set<String> startAtI = getStrings(i, dict, board, visited, pre, N, M);
@@ -102,14 +89,14 @@ public class Boggle {
         return results;
     }
 
-    private static Set<String> getStrings(int start, Trie dic, List<Character> board,
+    private static Set<String> getStrings(int start, Trie dic, char[] board,
                                            List<Integer> visited, String pre, int n, int m) {
-        if (start < 0 || start > board.size() - 1) {
+        if (start < 0 || start > board.length - 1) {
             throw new IllegalArgumentException();
         }
         Set<String> strs = new HashSet<>();
         Trie trie = dic;
-        char c = board.get(start);
+        char c = board[start];
         if (trie != null && trie.links.containsKey(c)) {
             trie = trie.links.get(c);
             visited.add(start);
