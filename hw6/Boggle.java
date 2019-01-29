@@ -1,5 +1,12 @@
-import java.util.*;
-
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 import edu.princeton.cs.algs4.In;
 
 public class Boggle {
@@ -61,11 +68,8 @@ public class Boggle {
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
         for (int i = 0; i < board.length; i += 1) {
-            List<Integer> visited = new ArrayList<>();
-            String pre = "";
             Set<String> startAtI = getStrings(i, dict, board, N, M);
             for (String s: startAtI) {
-
                 if (!pq.contains(s)) {
                     pq.add(s);
                 }
@@ -150,7 +154,6 @@ public class Boggle {
                     saw.addLast(nextSaw);
                 }
             }
-
         }
        return strs;
     }
