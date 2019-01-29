@@ -1,15 +1,18 @@
 import java.util.List;
-import edu.princeton.cs.algs4.In;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Comparator;
+import edu.princeton.cs.algs4.In;
 
 public class Boggle {
     
     // File path of dictionary file
     static String dictPath = "words.txt";
+    static Map<String, Trie> dictMap;
 
     /**
      * Solves a Boggle puzzle.
@@ -28,19 +31,22 @@ public class Boggle {
         }
 
         // create a trie dictionary
-        In inDic = new In(dictPath);
-        if (!inDic.exists()) {
-            throw new IllegalArgumentException("The dictionary file does not exist.");
+        if (dictMap == null || !dictMap.containsKey(dictPath)) {
+            dictMap = new HashMap<>();
+            In inDic = new In(dictPath);
+            if (!inDic.exists()) {
+                throw new IllegalArgumentException("The dictionary file does not exist.");
+            }
+            Trie dict = new Trie();
+            while (!inDic.isEmpty()) {
+                String s = inDic.readString();
+                dict.add(s);
+            }
+            inDic.close();
+            dictMap.put(dictPath, dict);
         }
-        Trie dict = new Trie();
-        while (!inDic.isEmpty()) {
-            String s = inDic.readString();
-            dict.add(s);
-        }
-        inDic.close();
-
+        Trie dict = dictMap.get(dictPath);
         // get the board information
-
         In inBoard = new In(boardFilePath);
         if (!inBoard.exists()) {
             return null;
@@ -112,10 +118,7 @@ public class Boggle {
                 strs.add(pre);
             }
             for (int j: neighbor(start, n, m)) {
-                List<Integer> jthVisited = new ArrayList<>();
-                for (int p: visited) {
-                    jthVisited.add(p);
-                }
+                List<Integer> jthVisited = new ArrayList<>(visited);
                 if (!jthVisited.contains(j)) {
                     Set<String> next = getStrings(j, trie, board, jthVisited, pre, n, m);
                     for (String s: next) {
