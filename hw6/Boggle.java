@@ -68,8 +68,8 @@ public class Boggle {
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
         int interval = 1;
-        if (N > 4) {
-            interval = N / 4;
+        if (N > 5) {
+            interval = N / 5;
         }
         for (int i = 0; i < N; i += interval) {
             int start = i * M;
