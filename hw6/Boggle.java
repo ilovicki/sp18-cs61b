@@ -85,7 +85,7 @@ public class Boggle {
 
 
         List<String> results = new ArrayList<>();
-        while(results.size() < k) {
+        while (results.size() < k) {
             if (pq.isEmpty()) {
                 break;
             }
