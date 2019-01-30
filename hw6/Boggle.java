@@ -68,8 +68,8 @@ public class Boggle {
 
         PriorityQueue<String> pq = new PriorityQueue(new StrCmp());
         int interval = 1;
-        if (N > 8) {
-            interval = N / 8;
+        if (N > 20) {
+            interval = N / 20;
         }
         for (int i = 0; i < N; i += interval) {
             int start = i * M;
@@ -79,19 +79,23 @@ public class Boggle {
             }
             Set<String> words = getStrings(start, end, dict, board, N, M);
             for (String word: words) {
-                if (!pq.contains(word)) {
-                    pq.add(word);
-                }
+                pq.add(word);
             }
         }
 
 
         List<String> results = new ArrayList<>();
-        for (int i = 0; i < k; i += 1) {
+        while(results.size() < k) {
             if (pq.isEmpty()) {
                 break;
             }
-            results.add(pq.poll());
+            String temp = pq.poll();
+            if (results.contains(temp)) {
+                continue;
+            } else {
+                results.add(temp);
+            }
+
         }
 
         return results;
