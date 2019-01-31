@@ -36,10 +36,14 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-
+        Plip p = new Plip(2);
+        Plip q = p.replicate();
+        assertEquals(1, p.energy(), 0.01);
+        assertEquals(1, q.energy(), 0.01);
+        assertNotSame(p, q);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
@@ -52,10 +56,14 @@ public class TestPlip {
         //Despite what the spec says, you cannot test for Cloruses nearby yet.
         //Sorry!  
 
-        Action actual = p.chooseAction(surrounded);
-        Action expected = new Action(Action.ActionType.STAY);
+        Action actual1 = p.chooseAction(surrounded);
+        Action expected1 = new Action(Action.ActionType.STAY);
+        assertEquals(expected1, actual1);
 
-        assertEquals(expected, actual);
+        surrounded.put(Direction.TOP, new Empty());
+        Action actual2 = p.chooseAction(surrounded);
+        Action expected2 = new Action(Action.ActionType.REPLICATE, Direction.TOP);
+        assertEquals(expected2, actual2);
     }
 
     public static void main(String[] args) {
