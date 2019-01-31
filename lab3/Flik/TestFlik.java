@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 public class TestFlik {
 
     @Test
-    public void testFlik(){
+    public void testFlik() {
         int a0 = 127;
         int b0 = 127;
         int a1 = 128;

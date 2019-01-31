@@ -88,7 +88,7 @@ public class IntList {
             return A;
         }
         IntList temp = A;
-        while (temp.rest != null){
+        while (temp.rest != null) {
             temp = temp.rest;
         }
         temp.rest = B;
@@ -121,10 +121,10 @@ public class IntList {
 //        return new IntList(A.first, catenate(A.rest, B));
     }
 
-    public static IntList reverse(IntList A){
+    public static IntList reverse(IntList A) {
         IntList frontOfReversed = null;
         IntList nextToAdd = A;
-        while(nextToAdd != null){
+        while (nextToAdd != null) {
             IntList remainderOfOriginal = nextToAdd.rest;
             nextToAdd.rest = frontOfReversed;
             frontOfReversed = nextToAdd;
